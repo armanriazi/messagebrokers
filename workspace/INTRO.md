@@ -2,7 +2,7 @@
 
 Message brokers are crucial components in modern computing architectures, particularly in distributed systems and microservices-based applications. They facilitate communication between various applications, systems, and services by translating messages between different messaging protocols, allowing them to interact despite being written in different languages or running on different platforms. This functionality is achieved through a combination of mechanisms and patterns designed to ensure efficient, reliable, and secure message exchange.
 
-### Mechanisms:
+## Mechanisms
 
 - **Message Queues**: At the heart of message brokers' operation is the concept of a message queue. Messages are stored in the queue in the order they arrive, ensuring they are processed in sequence. This mechanism supports asynchronous processing, preventing data loss, and allowing systems to continue functioning even if processes or connections fail. Message queues are either stored in memory or on a hard disk, depending on the requirements for durability and persistence [4].
 
@@ -10,7 +10,7 @@ Message brokers are crucial components in modern computing architectures, partic
 
 - **Reliability and Delivery Guarantees**: To ensure message delivery, especially in scenarios where the receiver might not be online immediately, message brokers implement mechanisms like acknowledgments and retransmissions. This ensures that messages are not lost and are delivered once the receiver is ready to process them [4].
 
-### Patterns:
+## Patterns
 
 - **Point-to-Point Messaging**: In this model, a producer sends a message directly to a single consumer. This pattern is suitable for scenarios where a direct response is expected from the consumer after processing the message [5].
 
@@ -26,3 +26,6 @@ Message brokers are crucial components in modern computing architectures, partic
 
 Despite their advantages, implementing message brokers introduces complexity and requires understanding various messaging models and patterns. Developers must navigate the learning curve associated with configuring and debugging message brokers to effectively leverage their capabilities in distributed systems [4].
 
+### Tools
+
+![Brokers](./assets/images/brokers.png)
