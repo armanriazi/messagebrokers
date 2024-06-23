@@ -2,6 +2,10 @@
 
 Message brokers are crucial components in modern computing architectures, particularly in distributed systems and microservices-based applications. They facilitate communication between various applications, systems, and services by translating messages between different messaging protocols, allowing them to interact despite being written in different languages or running on different platforms. This functionality is achieved through a combination of mechanisms and patterns designed to ensure efficient, reliable, and secure message exchange.
 
+# Products
+
+![Brokers](./assets/images/brokers.png)
+
 # Messages
 At its most basic, messaging involves the following participants [10]:
 
@@ -31,7 +35,7 @@ A message has three parts: Header, Properties, and Body, as shown in the followi
 
 Producers and consumers must agree upon the payload format so that the data can be properly interpreted. **Event messages use a schema to define the payload format.** 
 
-## Mechanisms
+# Mechanisms
 
 - **Message Queues**: At the heart of message brokers' operation is the concept of a message queue. Messages are stored in the queue in the order they arrive, ensuring they are processed **in sequence**. This mechanism **supports asynchronous processing**, preventing data loss, and allowing systems to continue functioning even if processes or connections fail. Message queues are either stored in **memory or on a hard disk**, depending on the requirements for durability and persistence [4].
 
@@ -39,13 +43,13 @@ Producers and consumers must agree upon the payload format so that the data can 
 
 - **Reliability and Delivery Guarantees**: To ensure message delivery, especially in scenarios where the receiver might not be online immediately, message brokers implement **mechanisms like acknowledgments and retransmissions**. This ensures that messages are not lost and are delivered once the receiver is ready to process them [4].
 
-## Patterns
+# Patterns
 
 - **Point-to-Point Messaging**: In this model, **a producer sends a message directly to a single consumer**. This pattern is suitable for scenarios where a direct response is expected from the consumer after processing the message [5].
 
 - **Publish-Subscribe Messaging**: Here, a message is published to a topic, and all subscribers to that topic receive the message. This pattern is ideal for **broadcasting messages** to multiple recipients simultaneously, supporting **scenarios like notifications or event-driven architectures** [5].
 
-### Use Cases and Benefits:
+# Use Cases and Benefits
 
 - **Microservices Communication**: In microservices architectures, message brokers enable seamless **communication between services**, allowing them to scale independently and deploy updates without impacting others. This is crucial for maintaining system stability and reliability [2].
 
@@ -75,12 +79,8 @@ The following diagram illustrates the tasks performed by the Data Plane:
 
 ![Data-Plane](./assets/images/data-plane.png)
 
-
-## Tools
-
-![Brokers](./assets/images/brokers.png)
-
-### Solace
+# Tools
+## Solace
 
 - [x] [Resource Calculator for PubSub+ Software Event Brokers](https://docs.solace.com/Admin-Ref/Resource-Calculator/pubsubplus-resource-calculator.html)
 - [x] [Versus Kafka](https://solace.com/differences/kafka/)
