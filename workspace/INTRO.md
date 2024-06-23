@@ -2,20 +2,32 @@
 
 Message brokers are crucial components in modern computing architectures, particularly in distributed systems and microservices-based applications. They facilitate communication between various applications, systems, and services by translating messages between different messaging protocols, allowing them to interact despite being written in different languages or running on different platforms. This functionality is achieved through a combination of mechanisms and patterns designed to ensure efficient, reliable, and secure message exchange.
 
+# Messages
 At its most basic, messaging involves the following participants [10]:
 
 - [x] Publisher—the entity that sends or publishes a message (also called a producer)
-
 - [x] Message—the information the publisher wants to send. Messages often contain event data, but can also carry queries, commands, and other information.
-
 - [x] Messaging system—the infrastructure that transmits the message
-
 - [x] Subscriber—the ultimate receiver of the message (also called a consumer)
 
 In an event-driven architecture (EDA), a message typically has a destination that separates the publisher from the subscriber. In the PubSub+ platform, a destination is generally a topic endpoint or a queue. Topic endpoints and queues are managed by event brokers [10].
 The following diagram illustrates event messages disseminating to multiple subscribers through a topic endpoint [10].
 
-![pub-sub-concept](./assets/images/pub-sub-concept.png){ width=600 height=400 align=center }
+![pub-sub-concept](./assets/images/pub-sub-concept.png)
+
+## Message Types
+
+The PubSub+ Platform supports three types of messages:
+
+- [x] An event message describes something that an application needs to tell other applications about. An event stream is a series of event messages published as events occur. Pricing streams and trade streams in capital markets are examples of event streams. Events and the messages that describe them are so closely tied together that we often use the terms event and message interchangeably in this documentation.
+- [x] A query is a message that retrieves information (for example, using HTTP GET and HEAD methods). A query requires a response.
+- [x] A command instructs another application to perform an action or change a state (for example, using HTTP POST, PUT, and DELETE methods). Commands, like queries, require a response.
+
+## Message Structure
+
+A message has three parts: Header, Properties, and Body, as shown in the following diagram:
+
+![pub-sub-concept](./assets/images/event-msg-properties.png)
 
 ## Mechanisms
 
@@ -43,7 +55,7 @@ Despite their advantages, implementing message brokers introduces complexity and
 
 ## Tools
 
-![Brokers](./assets/images/brokers.png){ width=300 height=150 align=center }
+![Brokers](./assets/images/brokers.png)
 
 
 
