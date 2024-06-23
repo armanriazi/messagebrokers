@@ -17,3 +17,5 @@
 [8] https://hevodata.com/learn/message-brokers/
 
 [9] https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBroker.html
+
+[10] https://docs.solace.com/
