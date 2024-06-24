@@ -19,6 +19,17 @@ The following diagram illustrates event messages disseminating to multiple subsc
 
 ![pub-sub-concept](./assets/images/pub-sub-concept.png)
 
+Following are some of the features of a good message passing System [19].
+
+- [x] Simplicity
+- [x] Uniform semantics
+- [x] Efficiency
+- [x] Reliability
+- [x] Corrections
+- [x] Flexibility
+- [x] Security
+- [x] Portability
+
 ## Message Types
 
 The PubSub+ Platform supports three types of messages [10]:
@@ -177,12 +188,23 @@ Solace supports the OASIS MQTT 3.1.1 and MQTT 5.0 standards to meet the needs of
 The WebSocket protocol allows you to specify a subprotocol during the initial **HTTP/1.1** handshake that can be used on top of WebSockets (for example, MQTT). Alternatively, you can define your own protocol on top of raw WebSockets if, say, you need custom data semantics or **extra features such as publish/subscribe messaging** [16].
 **As an event-driven technology**, WebSocket allows data to be transferred without the client requesting it [16].
 As ws is **bidirectional streaming** so, you can use multiplexing with WebSocket to improve performance, but you must either use a third-party library or support it in your code. Both options add complexity to your project.
+
+#### Features of WebSocket are [19]
+
+- [x] Full-Duplex Protocol: WebSocket is a full-duplex protocol as it allows the application to send and receive data at the same time.
+- [x] Stateful Protocol: It means the connection between server and client will not be terminated until and unless closed by any one of them either by the client or by the server. Once the connection is terminated from one end it is also closed by another end.
+- [x] 3-way handshake: Websocket uses a 3-way handshake also known as TCP connection for establishing communication between a client and server.
+
+
 ### RPC
+RPC is especially well suited for client-server (e.g. query-response) interaction in which the flow of control alternates between the caller and callee. Conceptually, the client and server do not both execute at the same time. Instead, the thread of execution jumps from the caller to the callee and then back again [19]. 
 
 #### gRPC
 **By default, gRPC uses Protocol Buffers (Protobuf) Interface Definition Language (IDL) to define the schema** [16].
 gRPC uses **HTTP/2** as the transport protocol and Protobuf as the wire format [16].
 gRPC supports **multiplexing** many requests on one connection, allowing for higher throughput [16].
+
+![grpc vs rest ref to the 19](./assets/images/differences-protocols.png)
 
 ##### gRPC-web
 As you will recall from the introduction, gRPC relies on HTTP/2 under the hood[16].
