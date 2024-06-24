@@ -19,3 +19,19 @@
 [9] https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBroker.html
 
 [10] https://docs.solace.com/
+
+[11] https://ably.com/periodic-table-of-realtime/amqp-0-9-1
+
+[12] https://www.rabbitmq.com/amqp-0-9-1-protocol
+
+[13] https://www.rabbitmq.com/docs/specification
+
+[14] https://openmama.finos.org/what_is_openmama.html
+
+[15] https://www.resolutesoftware.com/blog/rest-vs-graphql-vs-grpc-vs-websocket/
+
+[16] https://ably.com/topic/grpc-vs-websocket
+
+[17] https://swagger.io/specification/
+
+[18] https://apidog.com/blog/restful-api-vs-rest-api/
