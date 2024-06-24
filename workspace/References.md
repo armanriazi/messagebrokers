@@ -35,3 +35,7 @@
 [17] https://swagger.io/specification/
 
 [18] https://apidog.com/blog/restful-api-vs-rest-api/
+
+[19]
+
+[20] https://developer.confluent.io/courses/architecture/get-started/

@@ -11,6 +11,8 @@
     * [ReponseTime](./ReponseTime.md)
     * [Get-Start](Patterns30Days.md)
     * [Exceptions](./Exceptions.md)    
+* [Kafka](./Kafka.md)    
+* [Pseudo code](./PseudoCode.md)    
 * [Glossery](./Glossery.md)
 * [References](./References.md)
 
