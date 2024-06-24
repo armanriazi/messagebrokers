@@ -11,6 +11,8 @@ Event-driven-architecture (EDA)
 
 Access control lists manage client access to PubSub+ event brokers (ACL)
 
+Message exchange patterns (MEP)s
+
 ## Synonyms
 
 `dequeued, acknowledged, consumer, subscription`

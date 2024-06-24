@@ -67,9 +67,11 @@ Qos of event messages, which can be classified as Persistent (Guaranteed) or Non
 
 Messages flagged as Persistent result in an **acknowledgment message being sent back to the producer** after the message is stored. 
 
+![Persistent](./assets/images/persist.png)
+
 ## Non-Persistent Event Streams
 
-These events provide a QoS for consumers where loss of messages is acceptable
+These events provide a QoS for consumers where loss of messages is acceptable. 
 
 ![Non-Persistent](./assets/images/non-persistent.png)
 
@@ -78,6 +80,30 @@ These events provide a QoS for consumers where loss of messages is acceptable
 The following diagram illustrates the tasks performed by the Data Plane:
 
 ![Data-Plane](./assets/images/data-plane.png)
+
+*Topics that make it simple to configure a range of capabilities like queue routing, message promotion and demotion, and disaster recovery.*
+
+![Egress](./assets/images/egress.png)
+
+The following discussion and links provide information about the components illustrated in the diagram.
+
+- [x] Consumer Egress Queue: Learn more about egress per-client priority queues on brokers, and the commands that you can use to configure them.
+
+- [x] En/Ingress Topic ACL: You can use ACLs to control the topics to which clients are allowed to publish.
+
+- [x] Promotion: Message promotion is the situation where a producer sends **Direct messages**, and the consumer **receives these message from a Guaranteed messaging endpoint**.
+
+- [x] Demotion: Message demotion is the situation where the producer sends **Persistent messages**, and there are consumers that want to receive these messages, but can **tolerate lost messages.**
+
+- [x] Prioritization: When you enable an endpoint to respect message priority, the priority field in messages from producers are respected for all **guaranteed and promoted direct messages.**
+
+- [x] Shared Subscriptions: Shared subscriptions can be **used to load balance** large volumes of client data across multiple instances of back end data center applications.
+
+- [x] Persistent Message moved to Persisted Event Stream: All messages from the TCP network are placed into the Non-Persistent Event Stream directly. Based on the Delivery Mode in the message set to Persistent, the message is moved and persisted against the Persistent Event Stream.
+
+- [x] Logging: Learn how to use messaging APIs for logging.
+
+- [x] Subscription Binding: Typically, messages are published to a Queue when it's set as the destination of the message. However, you can also add a topic subscription to a Queue so that it receives any messages that are published to a matching topic destination.
 
 # Tools
 ## Solace

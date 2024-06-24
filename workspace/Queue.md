@@ -28,7 +28,7 @@ Runtime metrics such as VM scheduler usage, queue (Erlang) process GC activity, 
 **Classic queues use an on-disk index** for storing message locations on disk as well as a message store for persisting messages.
 Both persistent and transient messages are always persisted to disk except when:
 
-- [x] the queue is declared as transient or messages are **transient**
+- [x] the queue is declared as transient or messages are **transient**. This type of queue is active only while the consumer that created it is active [10].
 - [x] messages are smaller than the embedding threshold **(defaults to 4096 bytes)**
 - [x] for RabbitMQ 3.12 and later versions: the queue is short (queues may **keep up to** #2048 **messages** in memory at most, depending on the consumer delivery rate)
 
