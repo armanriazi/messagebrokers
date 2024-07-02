@@ -1,0 +1,1515 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>messagebrokers(A.R)</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="AboutMe.html"><strong aria-hidden="true">1.</strong> AboutMe</a></li><li class="chapter-item expanded "><a href="INTRO.html"><strong aria-hidden="true">2.</strong> Introductory</a></li><li class="chapter-item expanded "><a href="RabbitMQ.html"><strong aria-hidden="true">3.</strong> RabbitMQ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="Queue.html"><strong aria-hidden="true">3.1.</strong> Queue</a></li><li class="chapter-item "><a href="APIsOfRabbitMQ.html"><strong aria-hidden="true">3.2.</strong> APIs of RabbitMQ</a></li><li class="chapter-item "><a href="Gateway.html"><strong aria-hidden="true">3.3.</strong> Sample Gateway</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="GetCountMessages.html"><strong aria-hidden="true">3.3.1.</strong> GetCountMessages</a></li></ol></li><li class="chapter-item "><a href="ReponseTime.html"><strong aria-hidden="true">3.4.</strong> ReponseTime</a></li><li class="chapter-item "><a href="Patterns30Days.html"><strong aria-hidden="true">3.5.</strong> Get-Start</a></li><li class="chapter-item "><a href="Exceptions.html"><strong aria-hidden="true">3.6.</strong> Exceptions</a></li></ol></li><li class="chapter-item expanded "><a href="Kafka.html"><strong aria-hidden="true">4.</strong> Kafka</a></li><li class="chapter-item expanded "><a href="PseudoCode.html"><strong aria-hidden="true">5.</strong> Pseudo code</a></li><li class="chapter-item expanded "><a href="Glossery.html"><strong aria-hidden="true">6.</strong> Glossery</a></li><li class="chapter-item expanded "><a href="References.html"><strong aria-hidden="true">7.</strong> References</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">messagebrokers(A.R)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/armanriazi/messagebrokers/tree/main/workspace" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rabbitmq-mdbook"><a class="header" href="#rabbitmq-mdbook">RabbitMQ MDBook</a></h1>
+<p>This book is completely Free and Open Source.</p>
+<p>If you found this RabbitMQ book valuable and wish to contribute, consider supporting my efforts via cryptocurrency. Thanks!</p>
+<pre><code class="language-md">0xde5D732a5AB44832E1c69b18be30834639F44A2c
+</code></pre>
+<h2 id="downloads"><a class="header" href="#downloads">Downloads</a></h2>
+<p>You can also download the Epub version here:</p>
+<p><a href="https://github.com/armanriazi/rabbitmq/tree/main/downloads">https://github.com/armanriazi/rabbitmq/tree/main/downloads</a></p>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>Welcome to The Concise RabbitMQ Book! This guide equips you with essential knowledge and practical skills for effective NodeJs development. Discover key concepts and techniques to write clean, robust code. Whether you’re a beginner or an experienced developer, this book serves as both a comprehensive guide and a handy reference for leveraging Gateway-Api power in your projects.</p>
+<h2 id="about-the-author"><a class="header" href="#about-the-author">About the Author</a></h2>
+<p>Arman Riazi is an experienced Senior Backend-end Developer with a passion for Rust, R&amp;D and Blockchain since 2012.
+You can reach Arman Riazi on the following platforms:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+LinkedIn: <a href="https://www.linkedin.com/showcase/armanriazi">https://www.linkedin.com/showcase/armanriazi</a></li>
+<li><input disabled="" type="checkbox" checked=""/>
+GitHub: <a href="https://github.com/armanriazi">https://github.com/armanriazi</a></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Twitter: <a href="https://twitter.com/armanriazi.meta">https://twitter.com/armanriazi.meta</a></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Email: armanriyazi.github.io📧gmail.com</li>
+</ul>
+<!-- - [x] Instagram: <https://instagram.com/armanriazi_meta>-->
+<div style="break-before: page; page-break-before: always;"></div><h1 id="introductory"><a class="header" href="#introductory">Introductory</a></h1>
+<p>Message brokers are crucial components in modern computing architectures, particularly in distributed systems and microservices-based applications. They facilitate communication between various applications, systems, and services by translating messages between different messaging protocols, allowing them to interact despite being written in different languages or running on different platforms. This functionality is achieved through a combination of mechanisms and patterns designed to ensure efficient, reliable, and secure message exchange.</p>
+<h1 id="products"><a class="header" href="#products">Products</a></h1>
+<p><img src="./assets/images/brokers.png" alt="Brokers" /></p>
+<h1 id="messages"><a class="header" href="#messages">Messages</a></h1>
+<p>At its most basic, messaging involves the following participants [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Publisher—the entity that sends or publishes a message (also called a <strong>producer</strong>)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Message—the information the publisher wants to send. <strong>Messages often contain event data, but can also carry queries, commands, and other information</strong>.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Messaging system—the infrastructure that transmits the message</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Subscriber—the ultimate receiver of the message (also called a <strong>consumer</strong>)</li>
+</ul>
+<p>In an event-driven architecture (EDA), a message typically has a destination that separates the publisher from the subscriber. In the <strong>PubSub+ platform, a destination is generally a topic endpoint or a queue</strong>. Topic endpoints and queues are managed by event brokers [10].
+The following diagram illustrates event messages disseminating to multiple subscribers through a topic endpoint [10].</p>
+<p><img src="./assets/images/pub-sub-concept.png" alt="pub-sub-concept" /></p>
+<p>Following are some of the features of a good message passing System [19].</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Simplicity</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Uniform semantics</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Efficiency</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Reliability</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Corrections</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Flexibility</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Security</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Portability</li>
+</ul>
+<h2 id="message-types"><a class="header" href="#message-types">Message Types</a></h2>
+<p>The PubSub+ Platform supports three types of messages [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>An event message</strong> describes something that an application needs to tell other applications about. <strong>An event stream is a series of event messages published as events occur.</strong> Pricing streams and trade streams in capital markets are examples of event streams. Events and the messages that describe them are so closely tied together that we often use the terms event and message interchangeably in this documentation.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>A query</strong> is a message that retrieves information (for example, using HTTP GET and HEAD methods). <em>A query requires a response.</em></li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>A command</strong> instructs another application to perform an action or change a state (for example, using HTTP POST, PUT, and DELETE methods). Commands, like queries, <em>require a response.</em></li>
+</ul>
+<h2 id="message-structure"><a class="header" href="#message-structure">Message Structure</a></h2>
+<p>A message has three parts: Header, Properties, and Body, as shown in the following diagram [10].</p>
+<p><img src="./assets/images/event-msg-properties.png" alt="pub-sub-concept" /></p>
+<p>Producers and consumers must agree upon the payload format so that the data can be properly interpreted. <strong>Event messages use a schema to define the payload format [10].</strong> </p>
+<h2 id="message-delivery-modes"><a class="header" href="#message-delivery-modes">Message Delivery Modes</a></h2>
+<p>PubSub+ event brokers support the following types of message delivery [10]:</p>
+<h3 id="direct-messaging"><a class="header" href="#direct-messaging">Direct Messaging</a></h3>
+<p>Direct messaging has the following characteristics [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Clients subscribe to topics directly.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Messages are not retained for a client when that client is not connected to an event broker or event broker service.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Messages can be discarded when congestion or system failures are encountered.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Messages are not acknowledged upon delivery.</li>
+</ul>
+<h3 id="guaranteed-messaging"><a class="header" href="#guaranteed-messaging">Guaranteed Messaging</a></h3>
+<p>Guaranteed messaging has the following characteristics [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Topic subscriptions are associated with an endpoint on the broker rather than consuming clients.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Messages can’t be lost once they are acknowledged by the event broker.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+When messages are delivered to a durable endpoint, they are retained until they are consumed by a client.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Delivery to a client is acknowledged.</li>
+</ul>
+<h2 id="topics"><a class="header" href="#topics">Topics</a></h2>
+<p>As metadata in a message header that let publishers classify messages and let subscribers specify what they want to receive messages about. This publish-subscribe model enables event brokers to use topics as routing information to send event messages everywhere they need to go [10]. </p>
+<blockquote>
+<p>For example: <code>flight/[status]/[flightNumber]/[origin]/[destination]</code></p>
+</blockquote>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+flight indicates the <strong>type of event</strong>.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+boarding indicates the <strong>action</strong> that generates the event.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+ea1234/jfk/ord are <strong>properties</strong> of the specific event.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+e.g., flightNumber would be wildcard <code>*</code>.</li>
+</ul>
+<p>The <code>&gt;</code> character is used at the last level of a subscription to indicate a “one or more” wildcard match. For example, <em>flight/boarding/&gt;</em> doesn’t match the topic <em>flight/boarding</em>, but it does match flight/boarding/ea1234 and flight/boarding/ea321/yow/fra [10].</p>
+<h3 id="how-rich-topic-hierarchies-benefit-an-event-mesh"><a class="header" href="#how-rich-topic-hierarchies-benefit-an-event-mesh">How Rich Topic Hierarchies Benefit an Event Mesh?</a></h3>
+<p>If the event brokers were configured as an event mesh, events sent to <strong>any event broker in the mesh can be forwarded to other event brokers</strong> in the mesh. <strong>Dynamic Message Routing (DMR)</strong> automatically determines the best way to route messages through your event mesh [10].
+Smart topics and subscriptions serve various purposes within an event mesh and enable the following benefits when combined with a rich topic hierarchy [10]:</p>
+<ul>
+<li>Event Routing
+The event topic allows the event broker to make routing decisions without the need for complex understanding of the data encoded in the event’s payload.</li>
+<li>Event Filtering
+Without this fine-grained filtering, consumers may need to discard some of the received data, or an intermediary process would need to re-publish the data to a more specific stream.</li>
+<li>Event Access Control
+you can precisely control the flow of data based on the description of the data in the topic. Lack of precise access control may enable rogue applications to consume privileged information or initiate restricted actions.</li>
+<li>Event Handling Policy
+With a rich topic hierarchy, administrators can ensure that the right messages are replicated, added to replay logs, etc.</li>
+</ul>
+<h2 id="message-vpns"><a class="header" href="#message-vpns">Message VPNs</a></h2>
+<p>Message VPNs allow for many <strong>separate applications</strong> to share a single Solace PubSub+ software or appliance event broker while still remaining independent and separated. Basically, Message VPNs enable the <strong>virtualization of an event broker into many individual virtual event brokers</strong> [10]. (We say <code>vhost</code> about using RabbitMQ)
+Message VPNs allow for the <strong>segregation of topic space and messaging space by creating fully separate messaging domains</strong>. Message VPNs also group clients connecting to a network of Solace PubSub+ event brokers so that <strong>messages published within a particular group are only visible to clients that belong to that group</strong>. Each client connection is associated with a single Message VPN [10].</p>
+<h1 id="mechanisms"><a class="header" href="#mechanisms">Mechanisms</a></h1>
+<ul>
+<li>
+<p><strong>Message Queues</strong>: At the heart of message brokers’ operation is the concept of a message queue. Messages are stored in the queue in the order they arrive, ensuring they are processed <strong>in sequence</strong>. This mechanism <strong>supports asynchronous processing</strong>, preventing data loss, and allowing systems to continue functioning even if processes or connections fail. Message queues are either stored in <strong>memory or on a hard disk</strong>, depending on the requirements for durability and persistence [4].</p>
+</li>
+<li>
+<p><strong>Translation and Routing</strong>: Message brokers translate messages from the <strong>sender’s protocol to the receiver’s protocol</strong>, ensuring interoperability. They also route messages to the appropriate destination based on predefined rules or patterns, facilitating the decoupling of senders and receivers [2].</p>
+</li>
+<li>
+<p><strong>Reliability and Delivery Guarantees</strong>: To ensure message delivery, especially in scenarios where the receiver might not be online immediately, message brokers implement <strong>mechanisms like acknowledgments and retransmissions</strong>. This ensures that messages are not lost and are delivered once the receiver is ready to process them [4].</p>
+</li>
+</ul>
+<h1 id="patterns"><a class="header" href="#patterns">Patterns</a></h1>
+<ul>
+<li>
+<p><strong>Point-to-Point Messaging</strong>: In this model, <strong>a producer sends a message directly to a single consumer</strong>. This pattern is suitable for scenarios where a direct response is expected from the consumer after processing the message [5].</p>
+</li>
+<li>
+<p><strong>Publish-Subscribe Messaging</strong>: Here, a message is published to a topic, and all subscribers to that topic receive the message. This pattern is ideal for <strong>broadcasting messages</strong> to multiple recipients simultaneously, supporting <strong>scenarios like notifications or event-driven architectures</strong> [5].</p>
+</li>
+<li>
+<p><strong>Request/Reply</strong></p>
+</li>
+</ul>
+<h1 id="use-cases-and-benefits"><a class="header" href="#use-cases-and-benefits">Use Cases and Benefits</a></h1>
+<ul>
+<li>
+<p><strong>Microservices Communication</strong>: In microservices architectures, message brokers enable seamless <strong>communication between services</strong>, allowing them to scale independently and deploy updates without impacting others. This is crucial for maintaining system stability and reliability [2].</p>
+</li>
+<li>
+<p><strong>Hybrid and Multicloud Environments</strong>: Message brokers facilitate communication <strong>between on-premises systems and cloud components</strong>, as well as between different cloud platforms. This is essential for organizations transitioning to or operating in hybrid and multicloud environments [2].</p>
+</li>
+<li>
+<p><strong>Serverless Computing</strong>: In serverless architectures, where <strong>services run on-demand</strong>, message brokers provide a <em>scalable and reliable</em> way to <strong>trigger functions or services in response to events or messages</strong> [2].</p>
+</li>
+</ul>
+<p>Despite their advantages, implementing message brokers introduces complexity and requires understanding various messaging models and patterns. Developers must navigate the learning curve associated with configuring and debugging message brokers to effectively leverage their capabilities in distributed systems [4].</p>
+<h1 id="durability"><a class="header" href="#durability">Durability</a></h1>
+<p>Qos of event messages, which can be classified as Persistent (Guaranteed) or Non-Persistent [10]:</p>
+<h2 id="persistent-event-streams"><a class="header" href="#persistent-event-streams">Persistent Event Streams</a></h2>
+<p>Messages flagged as Persistent result in an <strong>acknowledgment message being sent back to the producer</strong> after the message is stored.</p>
+<p><img src="./assets/images/persist.png" alt="Persistent" /></p>
+<h2 id="non-persistent-event-streams"><a class="header" href="#non-persistent-event-streams">Non-Persistent Event Streams</a></h2>
+<p>These events provide a QoS for consumers where loss of messages is acceptable. </p>
+<p><img src="./assets/images/non-persistent.png" alt="Non-Persistent" /></p>
+<h1 id="data-plane-tasks"><a class="header" href="#data-plane-tasks">Data Plane Tasks</a></h1>
+<p>The following diagram illustrates the tasks performed by the Data Plane [10]:</p>
+<p><img src="./assets/images/data-plane.png" alt="Data-Plane" /></p>
+<p><em>Topics that make it simple to configure a range of capabilities like queue routing, message promotion and demotion, and disaster recovery [10].</em></p>
+<p><img src="./assets/images/egress.png" alt="Egress" /></p>
+<p>The following discussion and links provide information about the components illustrated in the diagram [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Consumer Egress Queue: Learn more about egress per-client priority queues on brokers, and the commands that you can use to configure them.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+En/Ingress Topic ACL: You can use ACLs to control the topics to which clients are allowed to publish.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Promotion: Message promotion is the situation where a producer sends <strong>Direct messages</strong>, and the consumer <strong>receives these message from a Guaranteed messaging endpoint</strong>.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Demotion: Message demotion is the situation where the producer sends <strong>Persistent messages</strong>, and there are consumers that want to receive these messages, but can <strong>tolerate lost messages.</strong></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Prioritization: When you enable an endpoint to respect message priority, the priority field in messages from producers are respected for all <strong>guaranteed and promoted direct messages.</strong></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Shared Subscriptions: Shared subscriptions can be <strong>used to load balance</strong> large volumes of client data across multiple instances of back end data center applications.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Persistent Message moved to Persisted Event Stream: All messages from the TCP network are placed into the Non-Persistent Event Stream directly. Based on the Delivery Mode in the message set to Persistent, the message is moved and persisted against the Persistent Event Stream.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Logging: Learn how to use messaging APIs for logging.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Subscription Binding: Typically, messages are published to a Queue when it’s set as the destination of the message. However, you can also add a topic subscription to a Queue so that it receives any messages that are published to a matching topic destination.</li>
+</ul>
+<h1 id="standards"><a class="header" href="#standards">Standards</a></h1>
+<h2 id="protocols"><a class="header" href="#protocols">Protocols</a></h2>
+<h3 id="rest"><a class="header" href="#rest">REST</a></h3>
+<p>The Solace REST Messaging API allows HTTP clients to send and receive messages with an event broker using HTTP POST requests. This enables REST clients to send messages to and receive messages from any Solace PubSub+ event broker clients without needing to use any Solace-provided API [10].</p>
+<p><img src="./assets/images/rest.png" alt="Rest vs RestApi Ref to the 18" /></p>
+<h3 id="amqp"><a class="header" href="#amqp">AMQP</a></h3>
+<p>Solace PubSub+ software event brokers support AMQP 1.0 as a component in Solaceʼs multi-protocol, any-to-any messaging solution based on open source and open standards.
+AMQP 0-9-1 and AMQP 1.0 are both messaging protocols, but they are fundamentally different in several key aspects [10]:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Scope and Topology Model: AMQP 1.0 introduces a different scope and topology model compared to AMQP 0-9-1. While AMQP 0-9-1 focuses on binary messaging and is designed for microservices and enterprise messaging, <strong>AMQP 1.0 aims to be more flexible and adaptable to various messaging scenarios, including cloud-based services and IoT devices</strong> [12].</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Compatibility and Conformance: AMQP 1.0 is considered a separate protocol from AMQP 0-9-1, and its support requires a plugin in systems like RabbitMQ. Despite being different protocols, both are supported by RabbitMQ, indicating that AMQP 1.0 is not intended as a direct replacement for AMQP 0-9-1 but as an alternative for specific use cases [13].</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Adoption and Implementation: <strong>The adoption of AMQP 1.0 has been limited</strong> due to its complexity and the fact that it represents a significant change from AMQP 0-9-1. Many messaging systems, including RabbitMQ, continue to support AMQP 0-9-1 extensively and offer AMQP 1.0 as an optional feature. This approach reflects the practical considerations of migrating from one protocol to another, especially when the newer version does not offer clear advantages over the established one [11].</li>
+</ul>
+<p>In summary, AMQP 0-9-1 and AMQP 1.0 differ significantly in their design philosophy, scope, and implementation details. AMQP 0-9-1 remains widely adopted for its simplicity and effectiveness in many messaging scenarios, while AMQP 1.0 offers greater flexibility at the cost of increased complexity and less widespread adoption [10].</p>
+<h3 id="mqtt"><a class="header" href="#mqtt">MQTT</a></h3>
+<p>Solace supports the OASIS MQTT 3.1.1 and MQTT 5.0 standards to meet the needs of connected devices and mobile applications that need an efficient way to send and receive information that <strong>requires very little client-side processing power, memory and/or bandwidth</strong>. The Solace PubSub+ event broker works with any third-party MQTT 3.1.1 or MQTT 5.0 compliant client API, including open source APIs available via an Eclipse initiative called Paho [10].</p>
+<h3 id="web-socket"><a class="header" href="#web-socket">Web Socket</a></h3>
+<p>The WebSocket protocol allows you to specify a subprotocol during the initial <strong>HTTP/1.1</strong> handshake that can be used on top of WebSockets (for example, MQTT). Alternatively, you can define your own protocol on top of raw WebSockets if, say, you need custom data semantics or <strong>extra features such as publish/subscribe messaging</strong> [16].
+<strong>As an event-driven technology</strong>, WebSocket allows data to be transferred without the client requesting it [16].
+As ws is <strong>bidirectional streaming</strong> so, you can use multiplexing with WebSocket to improve performance, but you must either use a third-party library or support it in your code. Both options add complexity to your project.</p>
+<h4 id="features-of-websocket-are-19"><a class="header" href="#features-of-websocket-are-19">Features of WebSocket are [19]</a></h4>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Full-Duplex Protocol: WebSocket is a full-duplex protocol as it allows the application to send and receive data at the same time.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Stateful Protocol: It means the connection between server and client will not be terminated until and unless closed by any one of them either by the client or by the server. Once the connection is terminated from one end it is also closed by another end.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+3-way handshake: Websocket uses a 3-way handshake also known as TCP connection for establishing communication between a client and server.</li>
+</ul>
+<h3 id="rpc"><a class="header" href="#rpc">RPC</a></h3>
+<p>RPC is especially well suited for client-server (e.g. query-response) interaction in which the flow of control alternates between the caller and callee. Conceptually, the client and server do not both execute at the same time. Instead, the thread of execution jumps from the caller to the callee and then back again [19]. </p>
+<h4 id="grpc"><a class="header" href="#grpc">gRPC</a></h4>
+<p><strong>By default, gRPC uses Protocol Buffers (Protobuf) Interface Definition Language (IDL) to define the schema</strong> [16].
+gRPC uses <strong>HTTP/2</strong> as the transport protocol and Protobuf as the wire format [16].
+gRPC supports <strong>multiplexing</strong> many requests on one connection, allowing for higher throughput [16].</p>
+<p><img src="./assets/images/differences-protocols.png" alt="grpc vs rest ref to the 19" /></p>
+<h5 id="grpc-web"><a class="header" href="#grpc-web">gRPC-web</a></h5>
+<p>As you will recall from the introduction, gRPC relies on HTTP/2 under the hood[16].
+Unfortunately, while modern web browsers do actually support HTTP/2, they don’t give client library developers the fine-grain control they need to implement the gRPC specification[16].
+To work around this, <strong>gRPC-web requires a small proxy on the server</strong> to translate the requests and responses from HTTP/2 to HTTP/1 [16].</p>
+<h3 id="graphql"><a class="header" href="#graphql">GraphQL</a></h3>
+<p>GraphQL is a language for querying data. Unlike most query languages (such as SQL), you don’t use GraphQL to query a particular type of data store (such as a MySQL database). Instead, you use GraphQL to query data from various sources over HTTP [15].</p>
+<h2 id="openapis"><a class="header" href="#openapis">OpenAPIs</a></h2>
+<h3 id="open-api-and-swagger"><a class="header" href="#open-api-and-swagger">Open API and Swagger</a></h3>
+<p>The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to HTTP APIs [17].</p>
+<h3 id="openmama"><a class="header" href="#openmama">OpenMAMA</a></h3>
+<p>The Open Middleware Agnostic Messaging API (OpenMAMA) is an open source, lightweight, vendor-neutral integration layer for sending and receiving market data information supported by the Linux Foundation. With unified support for many different kinds of data distribution in a compact, cost-effective platform [10].
+<strong>OpenMama uses a common publish/subscribe idiom (pub/sub)</strong>. In this messaging pattern the messages are not sent directly to the receivers, but published to a topic. Subscribers express interest in one or more topics, and receive only messages that interest them. This decoupling of publishers and subscribers allows for greater scalability [14].
+<strong>OpenMAMDA (Open Middleware Agnostic Market Data API) is a framework</strong> running on top of OpenMAMA which provides a market data specific API abstracting quotes, trades, order books, option chains and more, and which provides significant functionality to simplify development of trading applications [14].</p>
+<h3 id="jsm"><a class="header" href="#jsm">JSM</a></h3>
+<p>The Java Message Service (JMS) API is a messaging standard that allows application components based on the J2E.
+Open Message Queue (Open MQ) is both the Java Message Service reference implementation and a production-ready message queue.</p>
+<h3 id="apache-qpid"><a class="header" href="#apache-qpid">Apache Qpid</a></h3>
+<p>Messaging built on AMQP. Apache Qpid™ makes messaging tools that speak AMQP and support many languages and platforms. It provides transaction management, queuing, distribution, security, management, clustering, federation and heterogeneous multi-platform support.</p>
+<h3 id="eclipse-paho"><a class="header" href="#eclipse-paho">Eclipse Paho</a></h3>
+<p>MQTT and MQTT-SN are lightweight publish/subscribe messaging transports for TCP/IP and connectionless protocols (such as UDP) respectively. The Eclipse Paho project provides open source, mainly client side, implementations of MQTT and MQTT-SN in a variety of programming languages.</p>
+<h1 id="tools"><a class="header" href="#tools">Tools</a></h1>
+<h2 id="solace"><a class="header" href="#solace">Solace</a></h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+<a href="https://docs.solace.com/Admin-Ref/Resource-Calculator/pubsubplus-resource-calculator.html">Resource Calculator for PubSub+ Software Event Brokers</a></li>
+<li><input disabled="" type="checkbox" checked=""/>
+<a href="https://solace.com/differences/kafka/">Versus Kafka</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rabbitmq"><a class="header" href="#rabbitmq">RabbitMQ</a></h1>
+<h2 id="index"><a class="header" href="#index">Index</a></h2>
+<ul>
+<li><a href="./Queue.html">Queue</a></li>
+<li><a href="./APIsOfRabbitMQ.html">APIs of RabbitMQ</a></li>
+<li><a href="./Gateway.html">Sample Gateway</a>
+<ul>
+<li><a href="./GetCountMessages.html">GetCountMessages</a></li>
+</ul>
+</li>
+<li><a href="./ReponseTime.html">ReponseTime</a></li>
+<li><a href="Patterns30Days.html">GetStart</a></li>
+<li><a href="./Exceptions.html">Exceptions</a></li>
+<li><a href="./Glossery.html">Glossery</a></li>
+</ul>
+<h2 id="protocols-1"><a class="header" href="#protocols-1">Protocols</a></h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+<code>Port 5672</code>: AMQP 0-9-1 protocol, used for client-broker communication</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<code>Port 15672</code>: HTTP/HTTPS protocol, used for web management interface</li>
+</ul>
+<p>‍‍‍<code>bash curl -u guest:guest localhost:15672/api/overview ‍‍‍</code></p>
+<h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
+<h3 id="docker"><a class="header" href="#docker">Docker</a></h3>
+<pre><code class="language-bash">docker run -d --hostname localhost --network=gateway --name localhost_rabbit13 -p 8080:15672 -p 5672:5672 -p 25676:25676 rabbitmq:3-management
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="queues"><a class="header" href="#queues">Queues</a></h1>
+<h2 id="models-of-queues"><a class="header" href="#models-of-queues">Models of queues</a></h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Mirror/Classic</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Quorum</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Stream</li>
+</ul>
+<p>streams may be a better option than quorum queues.</p>
+<ul>
+<li><a href="https://www.rabbitmq.com/docs/quorum-queues#feature-comparison">quorum vs mirros queues</a></li>
+</ul>
+<p>In AMQP 0-9-1, queues can be declared as <strong>durable or transient</strong>. Metadata of a durable queue is stored on disk, while metadata of a transient queue is stored in memory when possible.</p>
+<p>So, the default <strong>QoS prefetch</strong> setting gives clients an unlimited buffer, and that can result in poor behaviour and performance.</p>
+<p><em>Delivered messages can be acknowledged by consumer explicitly or automatically</em> as soon as a delivery is written to connection socket.
+<strong>Automatic acknowledgement</strong> mode generally will <em>provide higher throughput rate</em> and uses less network bandwidth. However, it offers the least number of guarantees when it comes to failures. As a rule of thumb, consider using <strong>manual acknowledgement mode</strong> first.</p>
+<h2 id="metrics-and-monitoring"><a class="header" href="#metrics-and-monitoring">Metrics and Monitoring</a></h2>
+<p>RabbitMQ collects multiple metrics about queues. Most of them are available via RabbitMQ HTTP API and management UI, which is designed for monitoring. This includes queue length, ingress and egress rates, number of consumers, number of messages in various states (e.g. ready for delivery or unacknowledged), number of messages in RAM vs. on disk, and so on.
+rabbitmqctl can list queues and some basic metrics.
+Runtime metrics such as VM scheduler usage, queue (Erlang) process GC activity, amount of RAM used by the queue process, queue process mailbox length can be accessed using the <strong>rabbitmq-top plugin</strong> and individual queue pages in the management UI.</p>
+<h2 id="persistence-durable-storage-in-classic-queues"><a class="header" href="#persistence-durable-storage-in-classic-queues">Persistence (Durable Storage) in Classic Queues</a></h2>
+<p><strong>Classic queues use an on-disk index</strong> for storing message locations on disk as well as a message store for persisting messages.
+Both persistent and transient messages are always persisted to disk except when:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+the queue is declared as transient or messages are <strong>transient</strong>. This type of queue is active only while the consumer that created it is active [10].</li>
+<li><input disabled="" type="checkbox" checked=""/>
+messages are smaller than the embedding threshold <strong>(defaults to 4096 bytes)</strong></li>
+<li><input disabled="" type="checkbox" checked=""/>
+for RabbitMQ 3.12 and later versions: the queue is short (queues may <strong>keep up to</strong> #2048 <strong>messages</strong> in memory at most, depending on the consumer delivery rate)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="apis-of-rabbitmq-management"><a class="header" href="#apis-of-rabbitmq-management">APIs of rabbitmq-management</a></h1>
+<p>Based on the followed link let’s extract some tips:</p>
+<ul>
+<li><a href="https://raw.githack.com/rabbitmq/rabbitmq-management/rabbitmq_v3_5_6/priv/www/api/index.html">APIs of rabbitmq-management</a></li>
+</ul>
+<p>To make a request put in <code>http://localhost:15672/api/{followed api names}</code></p>
+<p>Might be you need to leave username and password of guest at header request.</p>
+<h2 id="note"><a class="header" href="#note">Note</a></h2>
+<p>For some application code that I have worked I set a hashtag like:</p>
+<blockquote>
+<p><code>#gateway getMessageCount: {requeue:false}</code></p>
+</blockquote>
+<p><a href="https://github.com/armanriazi/rabbitmq">rabbitmq</a> use Amqp-0-9-1 version of amqp Rabbitmq with amqplib in the NodeJS.</p>
+<h2 id="whoami"><a class="header" href="#whoami">/whoami</a></h2>
+<p>Details of the currently authenticated user.</p>
+<p>#gateway By Axios GET</p>
+<h2 id="aliveness-testvhost"><a class="header" href="#aliveness-testvhost">/aliveness-test/vhost 	</a></h2>
+<p>Declares a test queue, then publishes and consumes a message. Intended for use by monitoring tools. If everything is working correctly, will return HTTP status 200 with body:</p>
+<pre><code class="language-json">{&quot;status&quot;:&quot;ok&quot;}
+</code></pre>
+<p>Note: the test queue will not be deleted (to to prevent queue churn if this is repeatedly pinged). </p>
+<p>#gateway By Axios GET</p>
+<h2 id="vhostsyourdesirename"><a class="header" href="#vhostsyourdesirename">/vhosts/yourDesireName</a></h2>
+<p>#gateway By Axios POST it without body on the initialization of your app.</p>
+<h2 id="permissionsvhostuser"><a class="header" href="#permissionsvhostuser">/permissions/vhost/user</a></h2>
+<p>#gateway By Axios Get it to know if you have read, write, or configure access or not.</p>
+<h2 id="policiesvhostname"><a class="header" href="#policiesvhostname">/policies/vhost/name 	</a></h2>
+<p>An individual policy. To PUT a policy, you will need a body looking something like this:</p>
+<pre><code class="language-json">{&quot;pattern&quot;:&quot;amq.gen-*&quot;, &quot;definition&quot;: {&quot;amq-gen&quot;:&quot;all&quot;}, &quot;priority&quot;:0, &quot;apply-to&quot;: &quot;all&quot;}
+</code></pre>
+<p>pattern and definition are mandatory, priority and apply-to are optional. </p>
+<p>#gateway By Axios PUT it with body and then check it if is there a old policy or not.</p>
+<h2 id="vhosts"><a class="header" href="#vhosts">/vhosts 	</a></h2>
+<p>A list of all vhosts.</p>
+<p>#gateway By Axios GET to find total count of vhosts.</p>
+<h2 id="nodes"><a class="header" href="#nodes">/nodes 	</a></h2>
+<p>A list of nodes in the RabbitMQ cluster.</p>
+<p>#gateway By Axios GET to find total count of nodes.</p>
+<h2 id="queuesvhost"><a class="header" href="#queuesvhost">/queues/vhost 	</a></h2>
+<p>A list of all queues in a given virtual host.</p>
+<p>#gateway By Axios GET to find total count of queues of a vhost.</p>
+<h2 id="queuesvhostnamecontents"><a class="header" href="#queuesvhostnamecontents">/queues/vhost/name/contents 	</a></h2>
+<p>Contents of a queue. DELETE to purge. Note you can’t GET this.</p>
+<p>#gateway By Axios DELETE to purge a name service queue. Do it on step of initilization.</p>
+<h2 id="queuesvhostname"><a class="header" href="#queuesvhostname">/queues/vhost/name 	</a></h2>
+<p>An individual queue. To PUT a queue, you will need a body looking something like this:</p>
+<pre><code class="language-json">{&quot;auto_delete&quot;:false,&quot;durable&quot;:true,&quot;arguments&quot;:{},&quot;node&quot;:&quot;rabbit@smacmullen&quot;}
+</code></pre>
+<p>All keys are optional. This API doesn’t have POST method supportation by RabbitMq.</p>
+<p>When DELETEing a queue you can add the query string parameters if-empty=true and / or if-unused=true. These prevent the delete from succeeding if the queue contains messages, or has consumers, respectively. </p>
+<p>#gateway By Axios PUT to review above json when you use amqplib.</p>
+<h2 id="queuesvhostnameget"><a class="header" href="#queuesvhostnameget">/queues/vhost/name/get</a></h2>
+<p>Get messages from a queue. (This is not an HTTP GET as it will alter the state of the queue.) <strong>You should post a body looking like</strong>:</p>
+<pre><code class="language-json">{&quot;count&quot;:5,&quot;requeue&quot;:true,&quot;encoding&quot;:&quot;auto&quot;,&quot;truncate&quot;:50000}
+</code></pre>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>count</strong> controls <em>the maximum number of messages to get</em>. You may get fewer messages than this if the queue cannot immediately provide them.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>requeue</strong> determines whether the messages will be <em>removed from the queue</em>. If requeue is true they will be requeued - but their redelivered flag will be set.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>encoding</strong> must be either “auto” (in which case the payload will be returned as <em>a string if it is valid UTF-8</em>, and base64 encoded otherwise), or <em>“base64”</em> (in which case the payload will always be base64 encoded).
+If truncate is present it will truncate the message payload if it is larger than the size given (in bytes).</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>truncate</strong> is <em>optional</em>; all other keys are mandatory.</li>
+</ul>
+<p><strong>Please note</strong> that the get path in the <em>HTTP API is intended for diagnostics</em> etc - it does not implement reliable delivery and so should be treated <em>as a sysadmin’s tool rather than a general API for messaging.</em> </p>
+<p>#gateway In the getMessageCount() method, adding this params: {“count”: 2048, “requeue”:false,“encoding”:“auto”}</p>
+<p>Why we use #2048 ? find it by hashtag.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rabbitmq-project"><a class="header" href="#rabbitmq-project">RabbitMq Project</a></h1>
+<p>The purpose of this project is to show the use of RabbitMQ + NodeJs with a generic and simple to understand implementation.</p>
+<p>What will be shown in this project?</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+How to send messages to a specific Exchange on RabbitMQ.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+How to bind the Exchange to a queue.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+How to consume messages form a specific Queue.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+How to set up Dead Letters Exchanges and bind them to a queue.</li>
+</ul>
+<h2 id="senario-setting-up-rabbitmq"><a class="header" href="#senario-setting-up-rabbitmq">Senario: Setting Up RabbitMQ</a></h2>
+<p>As we called senario, we need to handle it in the code by programming. It is only a perspective of our goal/implemented code.</p>
+<p><code>amq-gen-id is generated by your app.</code></p>
+<p>Queue Configuration(You’d better to use APIs):</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Go to Queues Tab on RabbitMQ</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Click on Add a new queue bellow the table with all queues</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create three new queues with the following configuration</li>
+</ul>
+<pre><code class="language-md">Name: log_aiservice  
+Durabillity: Durable  
+Auto delete: No  
+Arguments: Leave it empty  
+
+Name: error_aiservice  
+Durabillity: Durable  
+Auto delete: No  
+Arguments: Leave it empty  
+
+Name: sub-aiservice  
+Durabillity: Durable  
+Auto delete: No  
+Arguments:  x-dead-letter-routing-key= amq-gen-id_dead_letter , x-dead-letter-routing-key = sub-aiservice
+</code></pre>
+<h2 id="exchange-configuration"><a class="header" href="#exchange-configuration">Exchange Configuration</a></h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Go to Exchanges Tab on RabbitMQ</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Click on Add a new Exchange bellow the table with all exchanges</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create two new Exchanges named <code>AMQ-GEN-ID</code> and <code>amq-gen-id_dead_letter</code> both with Type: <code>topic | Durabillity: Durable | Auto delete: No | Internal: No and let Arguments empty.</code></li>
+</ul>
+<p>Remember these configurations are default for the project, if you wish to change the names remember to adapt the project to them on the following steps!</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Click on the new Exchange named AMQ-GEN-ID</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Inside AMQ-GEN-ID click on Bindings</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create two new followed Bidings</li>
+</ul>
+<pre><code class="language-md">To queue: sub-aiservice
+Routing Key: aiservice
+Arguments: Leave it empty
+
+To queue: log_aiservice
+Routing Key: aiservice
+Arguments: Leave it empty
+</code></pre>
+<p>Now go back to Exchanges and go to amq-gen-id_dead_letter exchange
+Create a new Biding:</p>
+<pre><code class="language-md">To queue: error_aiservice
+Routing Key: sub-aiservice
+Arguments: Leave it empty
+</code></pre>
+<h2 id="custom-apis-rabbitmq-management"><a class="header" href="#custom-apis-rabbitmq-management">Custom APIs rabbitmq-management</a></h2>
+<p>Based on the followed link let’s extract some tips:</p>
+<ul>
+<li><a href="https://raw.githack.com/rabbitmq/rabbitmq-management/rabbitmq_v3_5_6/priv/www/api/index.html">APIs of rabbitmq-management</a></li>
+</ul>
+<p>To make a request put in <code>http://localhost:15672/api/{followed-api-names}</code></p>
+<p>Might you need to leave username and password of guest at header request.</p>
+<h3 id="whoami-1"><a class="header" href="#whoami-1">/whoami</a></h3>
+<p>Details of the currently authenticated user.</p>
+<p>#gateway By Axios GET</p>
+<h3 id="aliveness-testvhost-1"><a class="header" href="#aliveness-testvhost-1">/aliveness-test/vhost 	</a></h3>
+<p>Declares a test queue, then publishes and consumes a message. Intended for use by monitoring tools. If everything is working correctly, will return HTTP status 200 with body:</p>
+<pre><code class="language-json">{&quot;status&quot;:&quot;ok&quot;}
+</code></pre>
+<p>Note: the test queue will not be deleted (to to prevent queue churn if this is repeatedly pinged). </p>
+<p>#gateway By Axios GET</p>
+<h3 id="vhostsyourdesirename-1"><a class="header" href="#vhostsyourdesirename-1">/vhosts/yourDesireName</a></h3>
+<p>#gateway By Axios POST it without body on the initialization of your app.</p>
+<h3 id="permissionsvhostuser-1"><a class="header" href="#permissionsvhostuser-1">/permissions/vhost/user</a></h3>
+<p>#gateway By Axios Get it to know if you have read, write, or configure access or not.</p>
+<h3 id="policiesvhostname-1"><a class="header" href="#policiesvhostname-1">/policies/vhost/name 	</a></h3>
+<p>An individual policy. To PUT a policy, you will need a body looking something like this:</p>
+<pre><code class="language-json">{&quot;pattern&quot;:&quot;amq.gen-*&quot;, &quot;definition&quot;: {&quot;amq-gen&quot;:&quot;all&quot;}, &quot;priority&quot;:0, &quot;apply-to&quot;: &quot;all&quot;}
+</code></pre>
+<p>pattern and definition are mandatory, priority and apply-to are optional. </p>
+<p>#gateway By Axios PUT it with body and then check it if is there a old policy or not.</p>
+<h3 id="vhosts-1"><a class="header" href="#vhosts-1">/vhosts 	</a></h3>
+<p>A list of all vhosts.</p>
+<p>#gateway By Axios GET to find total count of vhosts.</p>
+<h3 id="nodes-1"><a class="header" href="#nodes-1">/nodes 	</a></h3>
+<p>A list of nodes in the RabbitMQ cluster.</p>
+<p>#gateway By Axios GET to find total count of nodes.</p>
+<h3 id="queuesvhost-1"><a class="header" href="#queuesvhost-1">/queues/vhost 	</a></h3>
+<p>A list of all queues in a given virtual host.</p>
+<p>#gateway By Axios GET to find total count of queues of a vhost.</p>
+<h3 id="queuesvhostnamecontents-1"><a class="header" href="#queuesvhostnamecontents-1">/queues/vhost/name/contents 	</a></h3>
+<p>Contents of a queue. DELETE to purge. Note you can’t GET this.</p>
+<p>#gateway By Axios DELETE to purge a name service queue. Do it on step of initilization.</p>
+<h3 id="queuesvhostname-1"><a class="header" href="#queuesvhostname-1">/queues/vhost/name 	</a></h3>
+<p>An individual queue. To PUT a queue, you will need a body looking something like this:</p>
+<pre><code class="language-json">{&quot;auto_delete&quot;:false,&quot;durable&quot;:true,&quot;arguments&quot;:{},&quot;node&quot;:&quot;rabbit@smacmullen&quot;}
+</code></pre>
+<p>All keys are optional. This API doesn’t have POST method supportation by RabbitMq.</p>
+<p>When DELETEing a queue you can add the query string parameters if-empty=true and / or if-unused=true. These prevent the delete from succeeding if the queue contains messages, or has consumers, respectively. </p>
+<p>#gateway By Axios PUT to review above json when you use amqplib.</p>
+<h3 id="queuesvhostnameget-1"><a class="header" href="#queuesvhostnameget-1">/queues/vhost/name/get</a></h3>
+<p>Get messages from a queue. (This is not an HTTP GET as it will alter the state of the queue.) <strong>You should post a body looking like</strong>:</p>
+<pre><code class="language-json">{&quot;count&quot;:5,&quot;requeue&quot;:true,&quot;encoding&quot;:&quot;auto&quot;,&quot;truncate&quot;:50000}
+</code></pre>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>count</strong> controls <em>the maximum number of messages to get</em>. You may get fewer messages than this if the queue cannot immediately provide them.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>requeue</strong> determines whether the messages will be <em>removed from the queue</em>. If requeue is true they will be requeued - but their redelivered flag will be set.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>encoding</strong> must be either “auto” (in which case the payload will be returned as <em>a string if it is valid UTF-8</em>, and base64 encoded otherwise), or <em>“base64”</em> (in which case the payload will always be base64 encoded).
+If truncate is present it will truncate the message payload if it is larger than the size given (in bytes).</li>
+<li><input disabled="" type="checkbox" checked=""/>
+<strong>truncate</strong> is <em>optional</em>; all other keys are mandatory.</li>
+</ul>
+<p><strong>Please note</strong> that the get path in the <em>HTTP API is intended for diagnostics</em> etc - it does not implement reliable delivery and so should be treated <em>as a sysadmin’s tool rather than a general API for messaging.</em> </p>
+<p>#gateway In the getMessageCount() method, adding this params: {“count”: 2048, “requeue”:false,“encoding”:“auto”}</p>
+<p>Why we use #2048 ? find it by hashtag.</p>
+<div style="break-before: page; page-break-before: always;"></div><pre><code class="language-javascript">app.get('/', (req, res) =&gt; {
+ open.then((conn) =&gt; {
+  return conn.createChannel();
+ }).then(function(ch) {
+  let q = 'test';
+
+  return ch.assertQueue(QUEUE_NAME).then(function(ok) {
+   if (ok.messageCount == 0) {
+    return NO_MESSAGES;
+   }
+
+   return ch.get(QUEUE_NAME, (msg) =&gt; {
+    if (msg !== null) {
+     ch.ack(msg);
+    }
+   });
+  });
+ }).then((msg) =&gt; {
+  if (msg === NO_MESSAGES) {
+   res.send({ message: &quot;No messages. Waiting...&quot; });
+  } else {
+   res.send({ message: `Message received: ${msg.content.toString()}` });
+  }
+ }).catch(console.warn);
+});
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="responsetime"><a class="header" href="#responsetime">ResponseTime</a></h1>
+<p>Let’s say it takes 50ms for Rabbit to take a message from this queue, put it on the network and for it to arrive at the consumer. It takes 4ms for the client to process the message. Once the consumer has processed the message, it sends an ack back to Rabbit, which takes a further 50ms to be sent to and processed by Rabbit. So we have a <strong>total round trip time of 104ms</strong>. If we have a QoS prefetch setting of 1 message then Rabbit won’t sent out the next message until after this round trip completes. Thus the <strong>client will be busy for only 4ms of every 104ms</strong>, or <strong>3.8%</strong> of the time. 
+If we do total round trip time / processing time on the client for each message, we get <strong>104 / 4 = 26 messages</strong></p>
+<p>Using it is pretty much the same as the normal QueueingConsumer except that you should provide three extra parameters to the constructor to get the best performance:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+The first is <strong>requeue</strong> which says whether, when messages are nacked, should they be requeued or discarded. If false, they will be discarded which may trigger the dead letter exchange mechanisms if they’re set up.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+The second is the <strong>targetDelay</strong> which is the acceptable time in milliseconds for messages to wait in the client-side QoS prefetch buffer.</li>
+<li><input disabled="" type="checkbox" checked=""/>
+The third is the <strong>interval</strong> and is the expected worst case processing time of one message in milliseconds. This doesn’t have to be spot on, but within an order of magnitude certainly helps.</li>
+</ul>
+<h2 id="calculate-restime-on-the-level-of-a-cluster"><a class="header" href="#calculate-restime-on-the-level-of-a-cluster">Calculate ResTime on the level of a cluster</a></h2>
+<p>The federation plugin can transmit messages between brokers (or clusters) in different administrative domains.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rabbitmq-for-nodejs-in-30-steps"><a class="header" href="#rabbitmq-for-nodejs-in-30-steps">RabbitMQ for Node.js in 30 steps</a></h1>
+<p>This is a simple guide to RabbitMQ patterns in MacOS using Node.js based on <a href="https://www.rabbitmq.com/tutorials/tutorial-one-javascript.html">RabbitMQ Tutorials</a>. The steps on this guide may also be applied to other operating systems but be aware that installation and running of RabbitMQ binaries and services could be different. In a nutshell, this guide covers installation, execution and basic configuration of the RabbitMQ service in Node.js.</p>
+<h2 id="contents"><a class="header" href="#contents">Contents</a></h2>
+<h3 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h3>
+<ol>
+<li><a href="Patterns30Days.html#1">Install RabbitMQ</a></li>
+<li><a href="Patterns30Days.html#2">Mac OS Brew install issues</a></li>
+<li><a href="Patterns30Days.html#3">Start RabbitMQ Service</a></li>
+</ol>
+<h3 id="consumer-and-producer-pattern"><a class="header" href="#consumer-and-producer-pattern">Consumer and Producer Pattern</a></h3>
+<ol>
+<li><a href="Patterns30Days.html#4">Create and run <code>send.js</code></a></li>
+<li><a href="Patterns30Days.html#5">Create and run <code>receive.js</code></a></li>
+<li><a href="Patterns30Days.html#6">Listing Queues</a></li>
+</ol>
+<h3 id="work-queue-pattern-round-robin-dispatcher"><a class="header" href="#work-queue-pattern-round-robin-dispatcher">Work Queue Pattern (Round-robin Dispatcher)</a></h3>
+<ol>
+<li><a href="Patterns30Days.html#7">Create <code>new_task.js</code></a></li>
+<li><a href="Patterns30Days.html#8">Create <code>worker.js</code></a></li>
+<li><a href="Patterns30Days.html#9">Running <code>worker.js</code></a></li>
+<li><a href="Patterns30Days.html#10">Running <code>new_task.js</code></a></li>
+<li><a href="Patterns30Days.html#11">Tasks running in sequence</a></li>
+<li><a href="Patterns30Days.html#12">Message acknowledgements</a></li>
+<li><a href="Patterns30Days.html#13">Message durability</a></li>
+<li><a href="Patterns30Days.html#14">Check unacknowledged messages</a></li>
+<li><a href="Patterns30Days.html#15">Message persisence</a></li>
+<li><a href="Patterns30Days.html#16">Fair dispatch</a></li>
+<li><a href="Patterns30Days.html#17">Summary</a></li>
+</ol>
+<h3 id="publish-and-subscribe-pattern---fanout"><a class="header" href="#publish-and-subscribe-pattern---fanout">Publish and Subscribe Pattern - Fanout</a></h3>
+<ol>
+<li><a href="Patterns30Days.html#18">Create <code>emit_log.js</code></a></li>
+<li><a href="Patterns30Days.html#19">Create <code>receive_logs.js</code></a></li>
+<li><a href="Patterns30Days.html#20">Running<code>receive_logs.js</code></a></li>
+<li><a href="Patterns30Days.html#21">Running <code>emit_log.js</code></a></li>
+<li><a href="Patterns30Days.html#22">Messages published to subscribers</a></li>
+<li><a href="Patterns30Days.html#23">Check bindings</a></li>
+<li><a href="Patterns30Days.html#24">Check types of exchanges</a></li>
+<li><a href="Patterns30Days.html#25">Summary</a></li>
+</ol>
+<h3 id="publish-and-subscribe-pattern---direct"><a class="header" href="#publish-and-subscribe-pattern---direct">Publish and Subscribe Pattern - Direct</a></h3>
+<ol>
+<li><a href="Patterns30Days.html#26">Create <code>emit_log_direct.js</code></a></li>
+<li><a href="Patterns30Days.html#27">Create <code>receive_logs_direct.js</code></a></li>
+<li><a href="Patterns30Days.html#28">Running<code>receive_logs_direct.js</code></a></li>
+<li><a href="Patterns30Days.html#29">Running <code>emit_log_direct.js</code></a></li>
+<li><a href="Patterns30Days.html#30">Summary</a></li>
+</ol>
+<h1 id="getting-started-1"><a class="header" href="#getting-started-1">Getting Started</a></h1>
+<h2 id="1-install-rabbitmq"><a class="header" href="#1-install-rabbitmq"><a id="1"></a>1. Install RabbitMQ</a></h2>
+<ul>
+<li>
+<p>https://www.rabbitmq.com/install-homebrew.html</p>
+</li>
+<li>
+<p><code>brew install rabbitmq</code></p>
+</li>
+</ul>
+<h2 id="2-mac-os-brew-install-issues"><a class="header" href="#2-mac-os-brew-install-issues"><a id="2"></a>2. Mac OS Brew install issues</a></h2>
+<ul>
+<li>As of writing, I expect that you will also have this issue:</li>
+</ul>
+<h3 id="issue"><a class="header" href="#issue">Issue</a></h3>
+<pre><code>Error: The `brew link` step did not complete successfully
+The formula built, but is not symlinked into /usr/local
+Could not symlink sbin/cuttlefish
+/usr/local/sbin is not writable.
+</code></pre>
+<h3 id="fix"><a class="header" href="#fix">Fix</a></h3>
+<pre><code>cd /usr/local
+sudo mkdir sbin
+sudo chown -R glenn:admin sbin
+brew link rabbitmq
+</code></pre>
+<h2 id="3-start-rabbitmq-service"><a class="header" href="#3-start-rabbitmq-service"><a id="3"></a>3. Start RabbitMQ Service</a></h2>
+<ul>
+<li><code>brew services start rabbitmq</code></li>
+</ul>
+<h1 id="consumer-and-producer-pattern-1"><a class="header" href="#consumer-and-producer-pattern-1">Consumer and Producer Pattern</a></h1>
+<h2 id="1-create-and-run-sendjs"><a class="header" href="#1-create-and-run-sendjs"><a id="4"></a>1. Create and run <code>send.js</code></a></h2>
+<p>This will send messages to a queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'hello'
+    // Declare the queue
+    ch.assertQueue(q, { durable: false })
+
+    // Send message to the queue
+    ch.sendToQueue(q, new Buffer('Hello World!'))
+    console.log(&quot; {x} Sent 'Hello World'&quot;)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<pre><code># Terminal
+sudo chmod 755 send.js
+./send.js
+</code></pre>
+<h2 id="2-create-and-run-receivejs"><a class="header" href="#2-create-and-run-receivejs"><a id="5"></a>2. Create and run <code>receive.js</code></a></h2>
+<p>This will receive messages from a queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'hello'
+    // Declare the queue
+    ch.assertQueue(q, { durable: false })
+
+    // Wait for Queue Messages
+    console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+    ch.consume( q, msg =&gt; {
+        console.log(` [x] Received ${msg.content.toString()}`)
+      }, { noAck: true }
+    )
+  })
+})
+</code></pre>
+<pre><code># Terminal
+sudo chmod 755 receive.js
+./receive.js
+</code></pre>
+<h2 id="3-listing-queues"><a class="header" href="#3-listing-queues"><a id="6"></a>3. Listing Queues</a></h2>
+<p>This will list all queues present in the RabbitMQ service</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_queues
+</code></pre>
+<h1 id="work-queue-pattern-round-robin-dispatcher-1"><a class="header" href="#work-queue-pattern-round-robin-dispatcher-1">Work Queue Pattern (Round-robin Dispatcher)</a></h1>
+<h2 id="1-create-new_taskjs"><a class="header" href="#1-create-new_taskjs"><a id="7"></a>1. Create <code>new_task.js</code></a></h2>
+<p>This will send a message to the next available queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'task_queue_durable'
+    // Write a message
+    const msg = process.argv.slice(2).join(' ') || &quot;Hello World!&quot;
+
+    // Declare the queue
+    ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+
+    // Send message to the queue
+    ch.sendToQueue(q, new Buffer(msg), {persistent: true}) // {persistent: true} saves the message to disk/cache
+    console.log(` {x} Sent '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h2 id="2-create-workerjs"><a class="header" href="#2-create-workerjs"><a id="8"></a>2. Create <code>worker.js</code></a></h2>
+<p>This will consume messages when it’s the next worker in the round-robin dispatch.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'task_queue_durable'
+    // Declare the queue
+    ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+    // Tell RabbitMQ not to give more than 1 message per worker
+    ch.prefetch(1)
+
+    // Wait for Queue Messages
+    console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+    ch.consume( q, msg =&gt; {
+        // Just to simulate a fake task, length of dots in the message
+        // is the number of secs the task will run
+        const secs = msg.content.toString().split('.').length - 1
+
+        console.log(` [x] Received ${msg.content.toString()}`)
+        console.log(` [x] Task will run for ${secs} secs`)
+        
+        // Fake task which simulates execution time
+        setTimeout(() =&gt; {
+          console.log(` [x] Done ${msg.content.toString()}`);
+          // Send acknowledgment
+          ch.ack(msg)
+        }, secs * 1000)
+
+      }, { noAck: false } // noAck: false means Message acknowledgments is turned on
+      // When message acknowledgements are turned on, even if a worker.js is killed (Ctrl+C)
+      // while processing a message, it will be redelivered
+    )
+  })
+})
+</code></pre>
+<h2 id="3-open-two-terminals-and-run-workerjs-on-each"><a class="header" href="#3-open-two-terminals-and-run-workerjs-on-each"><a id="9"></a>3. Open two terminals and run worker.js on each</a></h2>
+<pre><code># terminal 1
+sudo chmod 755 worker.js
+./worker.js
+# =&gt; [*] Waiting for messages. To exit press CTRL+C
+</code></pre>
+<pre><code># terminal 2
+./worker.js
+# =&gt; [*] Waiting for messages. To exit press CTRL+C
+</code></pre>
+<h2 id="4-open-a-third-terminal-and-run-several-new_taskjs"><a class="header" href="#4-open-a-third-terminal-and-run-several-new_taskjs"><a id="10"></a>4. Open a third terminal and run several new_task.js</a></h2>
+<pre><code>sudo chmod 755 new_task.js
+./new_task.js First message.
+./new_task.js Second message..
+./new_task.js Third message...
+./new_task.js Fourth message....
+./new_task.js Fifth message.....
+</code></pre>
+<h2 id="5-the-tasks-will-run-in-sequence-for-each-workerjs-currently-running"><a class="header" href="#5-the-tasks-will-run-in-sequence-for-each-workerjs-currently-running"><a id="11"></a>5. The tasks will run in sequence for each worker.js currently running.</a></h2>
+<h2 id="6-message-acknowledgements-in-workerjs"><a class="header" href="#6-message-acknowledgements-in-workerjs"><a id="12"></a>6. Message acknowledgements in <code>worker.js</code>.</a></h2>
+<p>This step was already done so there is nothing else to change anything in worker.js.</p>
+<pre><code class="language-javascript">{ noAck: false } // noAck: false means Message acknowledgments is turned on
+// When message acknowledgements are turned on, even if a worker.js is killed (Ctrl+C)
+// while processing a message, it will be redelivered
+</code></pre>
+<h2 id="7-message-durability-in-both-workerjs-and-new_taskjs"><a class="header" href="#7-message-durability-in-both-workerjs-and-new_taskjs"><a id="13"></a>7. Message durability in both <code>worker.js</code> and <code>new_task.js</code>.</a></h2>
+<p>This step was already done so there is nothing else to change anything in worker.js.</p>
+<pre><code class="language-javascript">ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+</code></pre>
+<pre><code class="language-javascript">// Send acknowledgment
+ch.ack(msg)
+</code></pre>
+<h2 id="8-check-unacknowledged-messages"><a class="header" href="#8-check-unacknowledged-messages"><a id="14"></a>8. Check unacknowledged messages.</a></h2>
+<p>To test this, comment out <code>ch.ack(msg)</code>. Messages will not be acknowledge with this commented.</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_queues name messages_ready messages_unacknowledged
+</code></pre>
+<h2 id="9-message-persistence-in-new_taskjs"><a class="header" href="#9-message-persistence-in-new_taskjs"><a id="15"></a>9. Message persistence in <code>new_task.js</code>.</a></h2>
+<p>As requirement to #7, persistence needs to be set to true.</p>
+<pre><code class="language-javascript">ch.sendToQueue(q, new Buffer(msg), {persistent: true}) // {persistent: true} saves the message to disk/cache
+</code></pre>
+<h2 id="10-fair-dispatch-consumer-queue-size-in-workerjs"><a class="header" href="#10-fair-dispatch-consumer-queue-size-in-workerjs"><a id="16"></a>10. Fair dispatch (consumer queue size) in <code>worker.js</code></a></h2>
+<pre><code class="language-javascript">// Tell RabbitMQ not to give more than 1 message per worker
+ch.prefetch(1)
+</code></pre>
+<h2 id="11-in-summary"><a class="header" href="#11-in-summary"><a id="17"></a>11. In summary:</a></h2>
+<ul>
+<li>The queue is now capable of round robin dispatch of messages.</li>
+<li>Message acknowledgement is turned on which means that if a worker dies, the message will be redelivered if not already acknowledged.</li>
+<li>Message persistence is turned on which means that if the RabbitMQ is killed or restarted, the message will still be written on disk or cache.</li>
+<li>Fair dispatch is enabled which means, the consumer will not process more than X messages per worker at the risk of filling up a queue.</li>
+</ul>
+<h1 id="publish-and-subscribe-pattern---fanout-1"><a class="header" href="#publish-and-subscribe-pattern---fanout-1">Publish and Subscribe Pattern - Fanout</a></h1>
+<h2 id="1-create-emit_logjs"><a class="header" href="#1-create-emit_logjs"><a id="18"></a>1. Create <code>emit_log.js</code></a></h2>
+<p>This will publish messages to an exchange and deliver the messages to all queues bound to that exchange.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'logs'
+    // Write a message
+    const msg = process.argv.slice(2).join(' ') || &quot;Hello World!&quot;
+
+    // Declare the exchange
+    ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+
+    // Send message to the exchange
+    ch.publish(ex, '', new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+    console.log(` {x} Sent '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-new_taskjs"><a class="header" href="#major-differences-from-previous-pattern-new_taskjs">Major differences from previous pattern <code>new_task.js</code></a></h3>
+<ol>
+<li>We are now declaring an exchange instead of a queue</li>
+</ol>
+<pre><code class="language-javascript">// Name of the exchange
+const ex = 'logs'
+</code></pre>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+</code></pre>
+<ol start="2">
+<li>We now publish messages instead of sending a message directly to a queue</li>
+</ol>
+<pre><code class="language-javascript">// Send message to the exchange
+ch.publish(ex, '', new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+</code></pre>
+<h2 id="2-create-receive_logsjs"><a class="header" href="#2-create-receive_logsjs"><a id="19"></a>2. Create <code>receive_logs.js</code></a></h2>
+<p>Every instance of this will subscribe to an exchange and receive messages from the queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'logs'
+    // Declare the exchange
+    ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+
+    // Declare the queues
+    ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+      // Wait for Queue Messages
+      console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+      // Tell exchange to send messages to queue
+      ch.bindQueue(q.queue, ex, '')
+      // Consume queue messages
+      ch.consume(q.queue, msg =&gt; {
+        console.log(` [x] ${msg.content.toString()}`)
+      }, {noAck: true})
+    })
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-workerjs"><a class="header" href="#major-differences-from-previous-pattern-workerjs">Major differences from previous pattern <code>worker.js</code></a></h3>
+<ol>
+<li>We are now declaring an exchange instead of a queue</li>
+</ol>
+<pre><code class="language-javascript">// Name of the exchange
+const ex = 'logs'
+</code></pre>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+</code></pre>
+<ol start="2">
+<li>We create a non-durable queue with a generated queue name by specifying an empty string.</li>
+</ol>
+<pre><code class="language-javascript">ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+</code></pre>
+<ol start="3">
+<li>We bind the exchange to the queue</li>
+</ol>
+<pre><code class="language-javascript">// Tell exchange to send messages to queue
+ch.bindQueue(q.queue, ex, '')
+</code></pre>
+<ol start="4">
+<li>The consumer consumes messages to every queue in the exchange (i.e. Sent to all running queues)</li>
+</ol>
+<pre><code class="language-javascript">// Consume queue messages
+ch.consume(q.queue, msg =&gt; {
+  console.log(` [x] ${msg.content.toString()}`)
+}, {noAck: true})
+</code></pre>
+<h2 id="3-open-two-terminals-and-run-receive_logsjs-for-each"><a class="header" href="#3-open-two-terminals-and-run-receive_logsjs-for-each"><a id="20"></a>3. Open two terminals and run <code>receive_logs.js</code> for each.</a></h2>
+<pre><code>#Terminal 1
+sudo chmod 755 receive_logs.js
+./receive_logs.js
+</code></pre>
+<pre><code>#Terminal 2
+./receive_logs.js
+</code></pre>
+<h2 id="4-open-a-third-terminal-and-run-emit_logjs"><a class="header" href="#4-open-a-third-terminal-and-run-emit_logjs"><a id="21"></a>4. Open a third terminal and run <code>emit_log.js</code>.</a></h2>
+<pre><code>#Terminal 3
+sudo chmod 755 emit_log.js
+./emit_log.js
+</code></pre>
+<h2 id="5-the-message-sent-by-emit_logjs-will-be-sent-to-all-running-receive_logsjs"><a class="header" href="#5-the-message-sent-by-emit_logjs-will-be-sent-to-all-running-receive_logsjs"><a id="22"></a>5. The message sent by <code>emit_log.js</code> will be sent to all running <code>receive_logs.js</code>.</a></h2>
+<h2 id="6-to-check-all-bindings-ie-exchanges-bound-to-queues"><a class="header" href="#6-to-check-all-bindings-ie-exchanges-bound-to-queues"><a id="23"></a>6. To check all bindings (i.e. Exchanges bound to queues):</a></h2>
+<pre><code>/usr/local/sbin/rabbitmqctl list_bindings
+</code></pre>
+<h2 id="7-aside-from-fanout-there-are-many-other-types-of-exchanges"><a class="header" href="#7-aside-from-fanout-there-are-many-other-types-of-exchanges"><a id="24"></a>7. Aside from <code>fanout</code>, there are many other types of exchanges.</a></h2>
+<p>Check them by typing the following in your terminal:</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_exchanges
+</code></pre>
+<h2 id="8-in-summary"><a class="header" href="#8-in-summary"><a id="25"></a>8. In summary:</a></h2>
+<ol>
+<li>We created subscribers that creates queues with randomly generated names and bind those to an exchange.</li>
+<li>We created a publisher that sends messages to an exchange and consumes the message to all queues bound to that exchange.</li>
+</ol>
+<h1 id="publish-and-subscribe-pattern---direct-1"><a class="header" href="#publish-and-subscribe-pattern---direct-1">Publish and Subscribe Pattern - Direct</a></h1>
+<h2 id="1-create-emit_log_directjs"><a class="header" href="#1-create-emit_log_directjs"><a id="26"></a>1. Create <code>emit_log_direct.js</code></a></h2>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'direct_logs'
+    // Store message as args
+    const args = process.argv.slice(2)
+    // Write a message
+    const msg = args.slice(1).join(' ') || &quot;Hello World!&quot;
+    // Use severity as the binding key
+    const severity = (args.length &gt; 0) ? args[0] : 'info'
+
+    // Declare the exchange
+    ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+
+    // Send message to the exchange
+    ch.publish(ex, severity, new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+    console.log(` {x} Sent ${severity}: '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-emit_logjs"><a class="header" href="#major-differences-from-previous-pattern-emit_logjs">Major differences from previous pattern <code>emit_log.js</code></a></h3>
+<ol>
+<li>We identify a binding key as part of the run arguments. For this example, we are using <code>severity</code> which can either have a value of <code>info</code>, <code>warning</code>, or <code>error</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Store message as args
+const args = process.argv.slice(2)
+// Write a message
+const msg = args.slice(1).join(' ') || &quot;Hello World!&quot;
+// Use severity as the binding key
+const severity = (args.length &gt; 0) ? args[0] : 'info'
+</code></pre>
+<ol start="2">
+<li>The exchange is now declared as <code>direct</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+</code></pre>
+<ol start="3">
+<li>Publishing the message now uses a binding key <code>severity</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Send message to the exchange
+ch.publish(ex, severity, new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+console.log(` {x} Sent ${severity}: '${msg}'`)
+</code></pre>
+<h2 id="2-create-receive_logs_directjs"><a class="header" href="#2-create-receive_logs_directjs"><a id="27"></a>2. Create <code>receive_logs_direct.js</code></a></h2>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Store message as args
+const args = process.argv.slice(2);
+
+// Choose what type of binding key `receive_logs_direct.js` is going to use
+// If no arguments were provided, output instructions
+if (args.length == 0) {
+  console.log(&quot;Usage: receive_logs_direct.js [info] [warning] [error]&quot;);
+  process.exit(1);
+}
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'direct_logs'
+    // Declare the exchange
+    ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+
+    // Declare the queues
+    ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+      // Wait for Queue Messages
+      console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+      // For each binding key, tell exchange to send messages to queue
+      args.forEach( severity =&gt; {
+        ch.bindQueue(q.queue, ex, severity)
+      })
+      
+      // Consume queue messages
+      ch.consume(q.queue, msg =&gt; {
+        console.log(` [x] ${msg.fields.routingKey}: ${msg.content.toString()}`)
+      }, {noAck: true})
+    })
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-receive_logsjs"><a class="header" href="#major-differences-from-previous-pattern-receive_logsjs">Major differences from previous pattern <code>receive_logs.js</code></a></h3>
+<ol>
+<li>We now require the user to specify a binding key as part of the run arguments. If no binding key is provided, an instruction will be outputted to the user.</li>
+</ol>
+<pre><code class="language-javascript">// If no arguments were provided, output instructions
+if (args.length == 0) {
+  console.log(&quot;Usage: receive_logs_direct.js [info] [warning] [error]&quot;);
+  process.exit(1);
+}
+</code></pre>
+<ol start="2">
+<li>The exchange is now declared as <code>direct</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+</code></pre>
+<ol start="3">
+<li>The exchange is bound to queues by binding key</li>
+</ol>
+<pre><code class="language-javascript">// For each binding key, tell exchange to send messages to queue
+args.forEach( severity =&gt; {
+  ch.bindQueue(q.queue, ex, severity)
+})
+</code></pre>
+<ol start="4">
+<li>The output message now outputs the routing key (equivalent value to binding key)</li>
+</ol>
+<pre><code class="language-javascript">// Consume queue messages
+ch.consume(q.queue, msg =&gt; {
+  console.log(` [x] ${msg.fields.routingKey}: ${msg.content.toString()}`)
+}, {noAck: true})
+</code></pre>
+<h2 id="3-open-2-terminals-to-run-receive_logs_directjs-for-each-routing-key"><a class="header" href="#3-open-2-terminals-to-run-receive_logs_directjs-for-each-routing-key"><a id="28"></a>3. Open 2 terminals to run <code>receive_logs_direct.js</code> for each routing key:</a></h2>
+<pre><code># Terminal 1 - Will display info messages only
+chmod 755 receive_logs_direct.js
+./receive_logs_direct.js info
+</code></pre>
+<pre><code># Terminal 2 - Will display warning and error messages
+./receive_logs_direct.js warning error
+</code></pre>
+<h2 id="4-open-another-terminal-to-run-emit_log_directjs"><a class="header" href="#4-open-another-terminal-to-run-emit_log_directjs"><a id="29"></a>4. Open another terminal to run <code>emit_log_direct.js</code></a></h2>
+<pre><code># Terminal 3
+chmod 755 emit_log_direct.js
+./emit_log_direct.js info This is an info message
+./emit_log_direct.js warning This is a warning message
+./emit_log_direct.js error This is an error message
+</code></pre>
+<h2 id="5-in-summary"><a class="header" href="#5-in-summary"><a id="30"></a>5. In summary:</a></h2>
+<ol>
+<li>We are now publishing and subscribing to messages using a <code>direct</code> exchange.</li>
+<li>A <code>direct</code> exchange uses a <code>binding key</code> (which has an equivalent value to a <code>routing key</code>). This key will tell the subscribers to listen only to a specific queue (similar to a channel).</li>
+<li>Receiving logs require that a binding key is specified before runtime. The queue will only receive messages from publishers with a similar binding keys which is also specified before runtime.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="exceptions"><a class="header" href="#exceptions">Exceptions</a></h1>
+<h2 id="resource-locked-405-channel"><a class="header" href="#resource-locked-405-channel">resource-locked 405 channel</a></h2>
+<p>The client attempted to work with a server entity to which it has no access because another client is working with it.
+Making sure you have not encounter with a exclusive queue.</p>
+<ul>
+<li><a href="https://www.rabbitmq.com/amqp-0-9-1-reference">Amqp-0-9-1-reference</a></li>
+</ul>
+<p><code>qpid.apache</code>, <code>nvoy-amqp</code></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kafka"><a class="header" href="#kafka">Kafka</a></h1>
+<p>To quickly grasp the concepts and patterns of Kafka, focus on understanding its core components and how they interact within the system. Here’s a condensed reference:</p>
+<p><img src="./assets/images/kafka1.png" alt="Kafka1" /></p>
+<h3 id="core-concepts"><a class="header" href="#core-concepts">Core Concepts</a></h3>
+<ul>
+<li>
+<p><strong>Event</strong>: The fundamental unit of data in Kafka, representing something that happened (e.g., a purchase order, payment). <em>Each event is a record with a timestamp, key, value, and optional headers.</em> The key is crucial for ordering, colocation, and retention [20].</p>
+</li>
+<li>
+<p><strong>Topic</strong>: <em>Organizes events</em> of the same type. Think of it as a database table. All events published to a topic are immutable and append-only. <em>Topics are divided into partitions for scalability and parallelism</em> [20].</p>
+</li>
+<li>
+<p><strong>Partition</strong>: The unit of data distribution and parallelism. <em>Data for a partition is stored within a single broker</em>, allowing for independent and parallel access by producers and consumers. <em>Partitions enable Kafka’s scalability and fault tolerance</em> [20].</p>
+</li>
+<li>
+<p><strong>Offset</strong>: <em>A unique identifier for each event within a partition, ensuring events are stored and consumed in order. Offsets are monotonically increasing and never reused, facilitating consumer tracking</em> [20].</p>
+</li>
+</ul>
+<p><img src="./assets/images/kafka5.png" alt="Kafka5" /></p>
+<h3 id="key-components"><a class="header" href="#key-components">Key Components</a></h3>
+<ul>
+<li>
+<p><strong>Producer API</strong>: Allows publishing events to Kafka. Producers send <em>records to topics, specifying the topic and partition</em> [20].</p>
+</li>
+<li>
+<p><strong>Consumer API</strong>: Enables reading events from Kafka. <em>Consumers subscribe to topics</em> and consume records from the specified partitions [20].</p>
+</li>
+<li>
+<p><strong>Streams API</strong>: A higher-level API for building applications and microservices, where the input and output data are stored in Kafka clusters. It supports <em>complex event processing and stream querying</em> [20].</p>
+</li>
+</ul>
+<p><img src="./assets/images/kafka2.png" alt="Kafka2" /></p>
+<p><img src="./assets/images/kafka3.png" alt="Kafka3" /></p>
+<ul>
+<li>
+<p><strong>Connect API</strong>: Integrates Kafka with other systems. Source connectors <em>import</em> data from external systems into Kafka, while sink connectors <em>export</em> data from Kafka to external systems [20].</p>
+</li>
+<li>
+<p><strong>Schema Registry</strong>: Manages and stores Avro schemas. It provides a serving layer for your metadata. <em>It ensures that data produced is compatible with the schema defined in the registry</em> [20].</p>
+</li>
+</ul>
+<p><img src="./assets/images/kafka4.png" alt="Kafka4" /></p>
+<h3 id="patterns-and-architectures"><a class="header" href="#patterns-and-architectures">Patterns and Architectures</a></h3>
+<ul>
+<li>
+<p><strong>Publish-Subscribe Model</strong>: Commonly used pattern where producers publish messages to topics, and consumers subscribe to topics of interest. This <em>decouples message producers from consumers</em> [20].</p>
+</li>
+<li>
+<p><strong>Log Compaction</strong>: Ensures that Kafka retains at least the last known value for each message key within a partition. This is useful for scenarios where you want to ensure that the <em>latest state is available even if older states are discarded</em> [20].</p>
+</li>
+<li>
+<p><strong>Exactly Once Semantics</strong>: Kafka aims to <em>deliver messages exactly once to the consumer</em>. This is achieved through a combination of idempotent producers, atomic commits, and consumer offsets [20].</p>
+</li>
+<li>
+<p><strong>Scalability and Fault Tolerance</strong>: Kafka’s distributed nature allows it to scale horizontally by adding more brokers to the cluster. It also <em>provides fault tolerance through replication of data across multiple brokers</em> [20].</p>
+</li>
+</ul>
+<h3 id="further-learning"><a class="header" href="#further-learning">Further Learning</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="pseudo-coding-a-message-broker"><a class="header" href="#pseudo-coding-a-message-broker">Pseudo coding a message broker</a></h1>
+<p>Creating a message broker that avoids vendor lock-in involves designing a system that can handle various messaging protocols and formats, allowing it to communicate with different systems regardless of the technology stack they’re using. This approach ensures flexibility and interoperability across different platforms and services. Here’s a high-level pseudocode outline for such a message broker:</p>
+<h3 id="step-1-define-interfaces-for-message-protocols"><a class="header" href="#step-1-define-interfaces-for-message-protocols">Step 1: Define Interfaces for Message Protocols</a></h3>
+<p>First, define interfaces for handling common messaging protocols like AMQP (Advanced Message Queuing Protocol), MQTT (Message Queuing Telemetry Transport), and HTTP(S) REST APIs. These interfaces will abstract away the specifics of each protocol, allowing the broker to work with them interchangeably.</p>
+<pre><code class="language-pseudo">interface IMessageProtocolHandler {
+    void send(message: Message);
+    Message receive();
+}
+</code></pre>
+<h3 id="step-2-implement-protocol-handlers"><a class="header" href="#step-2-implement-protocol-handlers">Step 2: Implement Protocol Handlers</a></h3>
+<p>Implement classes for each messaging protocol that adhere to the <code>IMessageProtocolHandler</code> interface. Each class will contain the logic specific to its protocol but will expose a unified API through the interface.</p>
+<pre><code class="language-pseudo">class AmqpHandler implements IMessageProtocolHandler {
+    // Implementation details for sending and receiving messages via AMQP
+}
+
+class MqttHandler implements IMessageProtocolHandler {
+    // Implementation details for sending and receiving messages via MQTT
+}
+
+class RestApiHandler implements IMessageProtocolHandler {
+    // Implementation details for sending and receiving messages via HTTP(S)
+}
+</code></pre>
+<h3 id="step-3-broker-logic"><a class="header" href="#step-3-broker-logic">Step 3: Broker Logic</a></h3>
+<p>The core of the message broker will manage connections to these handlers, dispatching messages based on their destination and protocol. It should also handle message routing, persistence, and delivery acknowledgments.</p>
+<pre><code class="language-pseudo">class MessageBroker {
+    private handlers: Map&lt;String, IMessageProtocolHandler&gt;;
+
+    constructor() {
+        this.handlers = new Map(); // Initialize with default handlers if needed
+    }
+
+    registerHandler(protocol: string, handler: IMessageProtocolHandler) {
+        this.handlers.set(protocol, handler);
+    }
+
+    sendMessage(destination: string, message: Message, protocol: string) {
+        const handler = this.handlers.get(protocol);
+        if (handler!= null) {
+            handler.send(message);
+        } else {
+            throw new Error(&quot;No handler found for protocol &quot; + protocol);
+        }
+    }
+
+    receiveMessage(source: string, protocol: string): Promise&lt;Message&gt; {
+        return new Promise((resolve, reject) =&gt; {
+            const handler = this.handlers.get(protocol);
+            if (handler!= null) {
+                try {
+                    resolve(handler.receive());
+                } catch (error) {
+                    reject(error);
+                }
+            } else {
+                reject(new Error(&quot;No handler found for protocol &quot; + protocol));
+            }
+        });
+    }
+}
+</code></pre>
+<h3 id="step-4-configuration-and-runtime"><a class="header" href="#step-4-configuration-and-runtime">Step 4: Configuration and Runtime</a></h3>
+<p>At runtime, the broker can be configured to add or remove handlers dynamically, allowing it to adapt to changes in the messaging landscape without requiring downtime or reconfiguration. This flexibility is crucial for avoiding vendor lock-in, as it enables the broker to integrate with new technologies or protocols as they emerge.</p>
+<p>This pseudocode provides a basic framework for building a message broker that is designed to avoid vendor lock-in. By abstracting the messaging protocols behind a common interface, the broker can seamlessly integrate with a wide range of messaging systems, ensuring interoperability and flexibility in communication between disparate systems and applications.</p>
+<p>Citations:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="glossery"><a class="header" href="#glossery">Glossery</a></h1>
+<h2 id="shortwords"><a class="header" href="#shortwords">Shortwords</a></h2>
+<p>High Availability (HA)</p>
+<p>Disaster Recovery (DR) failover</p>
+<p>Event-driven-architecture (EDA)</p>
+<p>Access control lists manage client access to PubSub+ event brokers (ACL)</p>
+<p>Message exchange patterns (MEP)s</p>
+<p>Dynamic Message Routing (DMR)</p>
+<p>Application Programming Interface (APIs)</p>
+<h2 id="synonyms"><a class="header" href="#synonyms">Synonyms</a></h2>
+<p><code>dequeued, acknowledged, consumer, subscription</code></p>
+<p><code>queued, producer</code></p>
+<p><code>requeue, redelivered flag, remove from the queue</code></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="citations"><a class="header" href="#citations">Citations</a></h1>
+<p>[1] https://en.wikipedia.org/wiki/Architectural_pattern</p>
+<p>[2] https://www.ibm.com/topics/message-brokers</p>
+<p>[3] https://tsh.io/blog/message-broker/</p>
+<p>[4] https://hasithas.medium.com/introduction-to-message-brokers-c4177d2a9fe3</p>
+<p>[5] https://www.vmware.com/topics/glossary/content/message-brokers.html</p>
+<p>[6] https://softwareengineering.stackexchange.com/questions/443684/message-broker-design-pattern-best-practice</p>
+<p>[7] https://www.geeksforgeeks.org/what-are-message-brokers-in-system-design/</p>
+<p>[8] https://hevodata.com/learn/message-brokers/</p>
+<p>[9] https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBroker.html</p>
+<p>[10] https://docs.solace.com/</p>
+<p>[11] https://ably.com/periodic-table-of-realtime/amqp-0-9-1</p>
+<p>[12] https://www.rabbitmq.com/amqp-0-9-1-protocol</p>
+<p>[13] https://www.rabbitmq.com/docs/specification</p>
+<p>[14] https://openmama.finos.org/what_is_openmama.html</p>
+<p>[15] https://www.resolutesoftware.com/blog/rest-vs-graphql-vs-grpc-vs-websocket/</p>
+<p>[16] https://ably.com/topic/grpc-vs-websocket</p>
+<p>[17] https://swagger.io/specification/</p>
+<p>[18] https://apidog.com/blog/restful-api-vs-rest-api/</p>
+<p>[19] https://www.geeksforgeeks.org/</p>
+<p>[20] https://developer.confluent.io/courses/architecture/get-started/</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace.js"></script>
+        <script src="editor.js"></script>
+        <script src="mode-rust.js"></script>
+        <script src="theme-dawn.js"></script>
+        <script src="theme-tomorrow_night.js"></script>
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

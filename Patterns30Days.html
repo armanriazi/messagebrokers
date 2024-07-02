@@ -1,0 +1,781 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Get-Start - messagebrokers(A.R)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="AboutMe.html"><strong aria-hidden="true">1.</strong> AboutMe</a></li><li class="chapter-item expanded "><a href="INTRO.html"><strong aria-hidden="true">2.</strong> Introductory</a></li><li class="chapter-item expanded "><a href="RabbitMQ.html"><strong aria-hidden="true">3.</strong> RabbitMQ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="Queue.html"><strong aria-hidden="true">3.1.</strong> Queue</a></li><li class="chapter-item "><a href="APIsOfRabbitMQ.html"><strong aria-hidden="true">3.2.</strong> APIs of RabbitMQ</a></li><li class="chapter-item "><a href="Gateway.html"><strong aria-hidden="true">3.3.</strong> Sample Gateway</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="GetCountMessages.html"><strong aria-hidden="true">3.3.1.</strong> GetCountMessages</a></li></ol></li><li class="chapter-item "><a href="ReponseTime.html"><strong aria-hidden="true">3.4.</strong> ReponseTime</a></li><li class="chapter-item expanded "><a href="Patterns30Days.html" class="active"><strong aria-hidden="true">3.5.</strong> Get-Start</a></li><li class="chapter-item "><a href="Exceptions.html"><strong aria-hidden="true">3.6.</strong> Exceptions</a></li></ol></li><li class="chapter-item expanded "><a href="Kafka.html"><strong aria-hidden="true">4.</strong> Kafka</a></li><li class="chapter-item expanded "><a href="PseudoCode.html"><strong aria-hidden="true">5.</strong> Pseudo code</a></li><li class="chapter-item expanded "><a href="Glossery.html"><strong aria-hidden="true">6.</strong> Glossery</a></li><li class="chapter-item expanded "><a href="References.html"><strong aria-hidden="true">7.</strong> References</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">messagebrokers(A.R)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/armanriazi/messagebrokers/tree/main/workspace" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/armanriazi/messagebrokers/edit/main/workspace/./workspace//Patterns30Days.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rabbitmq-for-nodejs-in-30-steps"><a class="header" href="#rabbitmq-for-nodejs-in-30-steps">RabbitMQ for Node.js in 30 steps</a></h1>
+<p>This is a simple guide to RabbitMQ patterns in MacOS using Node.js based on <a href="https://www.rabbitmq.com/tutorials/tutorial-one-javascript.html">RabbitMQ Tutorials</a>. The steps on this guide may also be applied to other operating systems but be aware that installation and running of RabbitMQ binaries and services could be different. In a nutshell, this guide covers installation, execution and basic configuration of the RabbitMQ service in Node.js.</p>
+<h2 id="contents"><a class="header" href="#contents">Contents</a></h2>
+<h3 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h3>
+<ol>
+<li><a href="#1">Install RabbitMQ</a></li>
+<li><a href="#2">Mac OS Brew install issues</a></li>
+<li><a href="#3">Start RabbitMQ Service</a></li>
+</ol>
+<h3 id="consumer-and-producer-pattern"><a class="header" href="#consumer-and-producer-pattern">Consumer and Producer Pattern</a></h3>
+<ol>
+<li><a href="#4">Create and run <code>send.js</code></a></li>
+<li><a href="#5">Create and run <code>receive.js</code></a></li>
+<li><a href="#6">Listing Queues</a></li>
+</ol>
+<h3 id="work-queue-pattern-round-robin-dispatcher"><a class="header" href="#work-queue-pattern-round-robin-dispatcher">Work Queue Pattern (Round-robin Dispatcher)</a></h3>
+<ol>
+<li><a href="#7">Create <code>new_task.js</code></a></li>
+<li><a href="#8">Create <code>worker.js</code></a></li>
+<li><a href="#9">Running <code>worker.js</code></a></li>
+<li><a href="#10">Running <code>new_task.js</code></a></li>
+<li><a href="#11">Tasks running in sequence</a></li>
+<li><a href="#12">Message acknowledgements</a></li>
+<li><a href="#13">Message durability</a></li>
+<li><a href="#14">Check unacknowledged messages</a></li>
+<li><a href="#15">Message persisence</a></li>
+<li><a href="#16">Fair dispatch</a></li>
+<li><a href="#17">Summary</a></li>
+</ol>
+<h3 id="publish-and-subscribe-pattern---fanout"><a class="header" href="#publish-and-subscribe-pattern---fanout">Publish and Subscribe Pattern - Fanout</a></h3>
+<ol>
+<li><a href="#18">Create <code>emit_log.js</code></a></li>
+<li><a href="#19">Create <code>receive_logs.js</code></a></li>
+<li><a href="#20">Running<code>receive_logs.js</code></a></li>
+<li><a href="#21">Running <code>emit_log.js</code></a></li>
+<li><a href="#22">Messages published to subscribers</a></li>
+<li><a href="#23">Check bindings</a></li>
+<li><a href="#24">Check types of exchanges</a></li>
+<li><a href="#25">Summary</a></li>
+</ol>
+<h3 id="publish-and-subscribe-pattern---direct"><a class="header" href="#publish-and-subscribe-pattern---direct">Publish and Subscribe Pattern - Direct</a></h3>
+<ol>
+<li><a href="#26">Create <code>emit_log_direct.js</code></a></li>
+<li><a href="#27">Create <code>receive_logs_direct.js</code></a></li>
+<li><a href="#28">Running<code>receive_logs_direct.js</code></a></li>
+<li><a href="#29">Running <code>emit_log_direct.js</code></a></li>
+<li><a href="#30">Summary</a></li>
+</ol>
+<h1 id="getting-started-1"><a class="header" href="#getting-started-1">Getting Started</a></h1>
+<h2 id="1-install-rabbitmq"><a class="header" href="#1-install-rabbitmq"><a id="1"></a>1. Install RabbitMQ</a></h2>
+<ul>
+<li>
+<p>https://www.rabbitmq.com/install-homebrew.html</p>
+</li>
+<li>
+<p><code>brew install rabbitmq</code></p>
+</li>
+</ul>
+<h2 id="2-mac-os-brew-install-issues"><a class="header" href="#2-mac-os-brew-install-issues"><a id="2"></a>2. Mac OS Brew install issues</a></h2>
+<ul>
+<li>As of writing, I expect that you will also have this issue:</li>
+</ul>
+<h3 id="issue"><a class="header" href="#issue">Issue</a></h3>
+<pre><code>Error: The `brew link` step did not complete successfully
+The formula built, but is not symlinked into /usr/local
+Could not symlink sbin/cuttlefish
+/usr/local/sbin is not writable.
+</code></pre>
+<h3 id="fix"><a class="header" href="#fix">Fix</a></h3>
+<pre><code>cd /usr/local
+sudo mkdir sbin
+sudo chown -R glenn:admin sbin
+brew link rabbitmq
+</code></pre>
+<h2 id="3-start-rabbitmq-service"><a class="header" href="#3-start-rabbitmq-service"><a id="3"></a>3. Start RabbitMQ Service</a></h2>
+<ul>
+<li><code>brew services start rabbitmq</code></li>
+</ul>
+<h1 id="consumer-and-producer-pattern-1"><a class="header" href="#consumer-and-producer-pattern-1">Consumer and Producer Pattern</a></h1>
+<h2 id="1-create-and-run-sendjs"><a class="header" href="#1-create-and-run-sendjs"><a id="4"></a>1. Create and run <code>send.js</code></a></h2>
+<p>This will send messages to a queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'hello'
+    // Declare the queue
+    ch.assertQueue(q, { durable: false })
+
+    // Send message to the queue
+    ch.sendToQueue(q, new Buffer('Hello World!'))
+    console.log(&quot; {x} Sent 'Hello World'&quot;)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<pre><code># Terminal
+sudo chmod 755 send.js
+./send.js
+</code></pre>
+<h2 id="2-create-and-run-receivejs"><a class="header" href="#2-create-and-run-receivejs"><a id="5"></a>2. Create and run <code>receive.js</code></a></h2>
+<p>This will receive messages from a queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'hello'
+    // Declare the queue
+    ch.assertQueue(q, { durable: false })
+
+    // Wait for Queue Messages
+    console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+    ch.consume( q, msg =&gt; {
+        console.log(` [x] Received ${msg.content.toString()}`)
+      }, { noAck: true }
+    )
+  })
+})
+</code></pre>
+<pre><code># Terminal
+sudo chmod 755 receive.js
+./receive.js
+</code></pre>
+<h2 id="3-listing-queues"><a class="header" href="#3-listing-queues"><a id="6"></a>3. Listing Queues</a></h2>
+<p>This will list all queues present in the RabbitMQ service</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_queues
+</code></pre>
+<h1 id="work-queue-pattern-round-robin-dispatcher-1"><a class="header" href="#work-queue-pattern-round-robin-dispatcher-1">Work Queue Pattern (Round-robin Dispatcher)</a></h1>
+<h2 id="1-create-new_taskjs"><a class="header" href="#1-create-new_taskjs"><a id="7"></a>1. Create <code>new_task.js</code></a></h2>
+<p>This will send a message to the next available queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'task_queue_durable'
+    // Write a message
+    const msg = process.argv.slice(2).join(' ') || &quot;Hello World!&quot;
+
+    // Declare the queue
+    ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+
+    // Send message to the queue
+    ch.sendToQueue(q, new Buffer(msg), {persistent: true}) // {persistent: true} saves the message to disk/cache
+    console.log(` {x} Sent '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h2 id="2-create-workerjs"><a class="header" href="#2-create-workerjs"><a id="8"></a>2. Create <code>worker.js</code></a></h2>
+<p>This will consume messages when it’s the next worker in the round-robin dispatch.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the queue
+    const q = 'task_queue_durable'
+    // Declare the queue
+    ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+    // Tell RabbitMQ not to give more than 1 message per worker
+    ch.prefetch(1)
+
+    // Wait for Queue Messages
+    console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+    ch.consume( q, msg =&gt; {
+        // Just to simulate a fake task, length of dots in the message
+        // is the number of secs the task will run
+        const secs = msg.content.toString().split('.').length - 1
+
+        console.log(` [x] Received ${msg.content.toString()}`)
+        console.log(` [x] Task will run for ${secs} secs`)
+        
+        // Fake task which simulates execution time
+        setTimeout(() =&gt; {
+          console.log(` [x] Done ${msg.content.toString()}`);
+          // Send acknowledgment
+          ch.ack(msg)
+        }, secs * 1000)
+
+      }, { noAck: false } // noAck: false means Message acknowledgments is turned on
+      // When message acknowledgements are turned on, even if a worker.js is killed (Ctrl+C)
+      // while processing a message, it will be redelivered
+    )
+  })
+})
+</code></pre>
+<h2 id="3-open-two-terminals-and-run-workerjs-on-each"><a class="header" href="#3-open-two-terminals-and-run-workerjs-on-each"><a id="9"></a>3. Open two terminals and run worker.js on each</a></h2>
+<pre><code># terminal 1
+sudo chmod 755 worker.js
+./worker.js
+# =&gt; [*] Waiting for messages. To exit press CTRL+C
+</code></pre>
+<pre><code># terminal 2
+./worker.js
+# =&gt; [*] Waiting for messages. To exit press CTRL+C
+</code></pre>
+<h2 id="4-open-a-third-terminal-and-run-several-new_taskjs"><a class="header" href="#4-open-a-third-terminal-and-run-several-new_taskjs"><a id="10"></a>4. Open a third terminal and run several new_task.js</a></h2>
+<pre><code>sudo chmod 755 new_task.js
+./new_task.js First message.
+./new_task.js Second message..
+./new_task.js Third message...
+./new_task.js Fourth message....
+./new_task.js Fifth message.....
+</code></pre>
+<h2 id="5-the-tasks-will-run-in-sequence-for-each-workerjs-currently-running"><a class="header" href="#5-the-tasks-will-run-in-sequence-for-each-workerjs-currently-running"><a id="11"></a>5. The tasks will run in sequence for each worker.js currently running.</a></h2>
+<h2 id="6-message-acknowledgements-in-workerjs"><a class="header" href="#6-message-acknowledgements-in-workerjs"><a id="12"></a>6. Message acknowledgements in <code>worker.js</code>.</a></h2>
+<p>This step was already done so there is nothing else to change anything in worker.js.</p>
+<pre><code class="language-javascript">{ noAck: false } // noAck: false means Message acknowledgments is turned on
+// When message acknowledgements are turned on, even if a worker.js is killed (Ctrl+C)
+// while processing a message, it will be redelivered
+</code></pre>
+<h2 id="7-message-durability-in-both-workerjs-and-new_taskjs"><a class="header" href="#7-message-durability-in-both-workerjs-and-new_taskjs"><a id="13"></a>7. Message durability in both <code>worker.js</code> and <code>new_task.js</code>.</a></h2>
+<p>This step was already done so there is nothing else to change anything in worker.js.</p>
+<pre><code class="language-javascript">ch.assertQueue(q, { durable: true }) // { durable: true } ensures that the message will still be redelivered even if RabbitMQ service is turned off/restarted
+</code></pre>
+<pre><code class="language-javascript">// Send acknowledgment
+ch.ack(msg)
+</code></pre>
+<h2 id="8-check-unacknowledged-messages"><a class="header" href="#8-check-unacknowledged-messages"><a id="14"></a>8. Check unacknowledged messages.</a></h2>
+<p>To test this, comment out <code>ch.ack(msg)</code>. Messages will not be acknowledge with this commented.</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_queues name messages_ready messages_unacknowledged
+</code></pre>
+<h2 id="9-message-persistence-in-new_taskjs"><a class="header" href="#9-message-persistence-in-new_taskjs"><a id="15"></a>9. Message persistence in <code>new_task.js</code>.</a></h2>
+<p>As requirement to #7, persistence needs to be set to true.</p>
+<pre><code class="language-javascript">ch.sendToQueue(q, new Buffer(msg), {persistent: true}) // {persistent: true} saves the message to disk/cache
+</code></pre>
+<h2 id="10-fair-dispatch-consumer-queue-size-in-workerjs"><a class="header" href="#10-fair-dispatch-consumer-queue-size-in-workerjs"><a id="16"></a>10. Fair dispatch (consumer queue size) in <code>worker.js</code></a></h2>
+<pre><code class="language-javascript">// Tell RabbitMQ not to give more than 1 message per worker
+ch.prefetch(1)
+</code></pre>
+<h2 id="11-in-summary"><a class="header" href="#11-in-summary"><a id="17"></a>11. In summary:</a></h2>
+<ul>
+<li>The queue is now capable of round robin dispatch of messages.</li>
+<li>Message acknowledgement is turned on which means that if a worker dies, the message will be redelivered if not already acknowledged.</li>
+<li>Message persistence is turned on which means that if the RabbitMQ is killed or restarted, the message will still be written on disk or cache.</li>
+<li>Fair dispatch is enabled which means, the consumer will not process more than X messages per worker at the risk of filling up a queue.</li>
+</ul>
+<h1 id="publish-and-subscribe-pattern---fanout-1"><a class="header" href="#publish-and-subscribe-pattern---fanout-1">Publish and Subscribe Pattern - Fanout</a></h1>
+<h2 id="1-create-emit_logjs"><a class="header" href="#1-create-emit_logjs"><a id="18"></a>1. Create <code>emit_log.js</code></a></h2>
+<p>This will publish messages to an exchange and deliver the messages to all queues bound to that exchange.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'logs'
+    // Write a message
+    const msg = process.argv.slice(2).join(' ') || &quot;Hello World!&quot;
+
+    // Declare the exchange
+    ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+
+    // Send message to the exchange
+    ch.publish(ex, '', new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+    console.log(` {x} Sent '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-new_taskjs"><a class="header" href="#major-differences-from-previous-pattern-new_taskjs">Major differences from previous pattern <code>new_task.js</code></a></h3>
+<ol>
+<li>We are now declaring an exchange instead of a queue</li>
+</ol>
+<pre><code class="language-javascript">// Name of the exchange
+const ex = 'logs'
+</code></pre>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+</code></pre>
+<ol start="2">
+<li>We now publish messages instead of sending a message directly to a queue</li>
+</ol>
+<pre><code class="language-javascript">// Send message to the exchange
+ch.publish(ex, '', new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+</code></pre>
+<h2 id="2-create-receive_logsjs"><a class="header" href="#2-create-receive_logsjs"><a id="19"></a>2. Create <code>receive_logs.js</code></a></h2>
+<p>Every instance of this will subscribe to an exchange and receive messages from the queue.</p>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'logs'
+    // Declare the exchange
+    ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+
+    // Declare the queues
+    ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+      // Wait for Queue Messages
+      console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+      // Tell exchange to send messages to queue
+      ch.bindQueue(q.queue, ex, '')
+      // Consume queue messages
+      ch.consume(q.queue, msg =&gt; {
+        console.log(` [x] ${msg.content.toString()}`)
+      }, {noAck: true})
+    })
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-workerjs"><a class="header" href="#major-differences-from-previous-pattern-workerjs">Major differences from previous pattern <code>worker.js</code></a></h3>
+<ol>
+<li>We are now declaring an exchange instead of a queue</li>
+</ol>
+<pre><code class="language-javascript">// Name of the exchange
+const ex = 'logs'
+</code></pre>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'fanout', { durable: false }) // 'fanout' will broadcast all messages to all the queues it knows
+</code></pre>
+<ol start="2">
+<li>We create a non-durable queue with a generated queue name by specifying an empty string.</li>
+</ol>
+<pre><code class="language-javascript">ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+</code></pre>
+<ol start="3">
+<li>We bind the exchange to the queue</li>
+</ol>
+<pre><code class="language-javascript">// Tell exchange to send messages to queue
+ch.bindQueue(q.queue, ex, '')
+</code></pre>
+<ol start="4">
+<li>The consumer consumes messages to every queue in the exchange (i.e. Sent to all running queues)</li>
+</ol>
+<pre><code class="language-javascript">// Consume queue messages
+ch.consume(q.queue, msg =&gt; {
+  console.log(` [x] ${msg.content.toString()}`)
+}, {noAck: true})
+</code></pre>
+<h2 id="3-open-two-terminals-and-run-receive_logsjs-for-each"><a class="header" href="#3-open-two-terminals-and-run-receive_logsjs-for-each"><a id="20"></a>3. Open two terminals and run <code>receive_logs.js</code> for each.</a></h2>
+<pre><code>#Terminal 1
+sudo chmod 755 receive_logs.js
+./receive_logs.js
+</code></pre>
+<pre><code>#Terminal 2
+./receive_logs.js
+</code></pre>
+<h2 id="4-open-a-third-terminal-and-run-emit_logjs"><a class="header" href="#4-open-a-third-terminal-and-run-emit_logjs"><a id="21"></a>4. Open a third terminal and run <code>emit_log.js</code>.</a></h2>
+<pre><code>#Terminal 3
+sudo chmod 755 emit_log.js
+./emit_log.js
+</code></pre>
+<h2 id="5-the-message-sent-by-emit_logjs-will-be-sent-to-all-running-receive_logsjs"><a class="header" href="#5-the-message-sent-by-emit_logjs-will-be-sent-to-all-running-receive_logsjs"><a id="22"></a>5. The message sent by <code>emit_log.js</code> will be sent to all running <code>receive_logs.js</code>.</a></h2>
+<h2 id="6-to-check-all-bindings-ie-exchanges-bound-to-queues"><a class="header" href="#6-to-check-all-bindings-ie-exchanges-bound-to-queues"><a id="23"></a>6. To check all bindings (i.e. Exchanges bound to queues):</a></h2>
+<pre><code>/usr/local/sbin/rabbitmqctl list_bindings
+</code></pre>
+<h2 id="7-aside-from-fanout-there-are-many-other-types-of-exchanges"><a class="header" href="#7-aside-from-fanout-there-are-many-other-types-of-exchanges"><a id="24"></a>7. Aside from <code>fanout</code>, there are many other types of exchanges.</a></h2>
+<p>Check them by typing the following in your terminal:</p>
+<pre><code>/usr/local/sbin/rabbitmqctl list_exchanges
+</code></pre>
+<h2 id="8-in-summary"><a class="header" href="#8-in-summary"><a id="25"></a>8. In summary:</a></h2>
+<ol>
+<li>We created subscribers that creates queues with randomly generated names and bind those to an exchange.</li>
+<li>We created a publisher that sends messages to an exchange and consumes the message to all queues bound to that exchange.</li>
+</ol>
+<h1 id="publish-and-subscribe-pattern---direct-1"><a class="header" href="#publish-and-subscribe-pattern---direct-1">Publish and Subscribe Pattern - Direct</a></h1>
+<h2 id="1-create-emit_log_directjs"><a class="header" href="#1-create-emit_log_directjs"><a id="26"></a>1. Create <code>emit_log_direct.js</code></a></h2>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'direct_logs'
+    // Store message as args
+    const args = process.argv.slice(2)
+    // Write a message
+    const msg = args.slice(1).join(' ') || &quot;Hello World!&quot;
+    // Use severity as the binding key
+    const severity = (args.length &gt; 0) ? args[0] : 'info'
+
+    // Declare the exchange
+    ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+
+    // Send message to the exchange
+    ch.publish(ex, severity, new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+    console.log(` {x} Sent ${severity}: '${msg}'`)
+
+    // Close the connection and exit
+    setTimeout(() =&gt; {
+      conn.close()
+      process.exit(0)
+    }, 500)
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-emit_logjs"><a class="header" href="#major-differences-from-previous-pattern-emit_logjs">Major differences from previous pattern <code>emit_log.js</code></a></h3>
+<ol>
+<li>We identify a binding key as part of the run arguments. For this example, we are using <code>severity</code> which can either have a value of <code>info</code>, <code>warning</code>, or <code>error</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Store message as args
+const args = process.argv.slice(2)
+// Write a message
+const msg = args.slice(1).join(' ') || &quot;Hello World!&quot;
+// Use severity as the binding key
+const severity = (args.length &gt; 0) ? args[0] : 'info'
+</code></pre>
+<ol start="2">
+<li>The exchange is now declared as <code>direct</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+</code></pre>
+<ol start="3">
+<li>Publishing the message now uses a binding key <code>severity</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Send message to the exchange
+ch.publish(ex, severity, new Buffer(msg))  // '' empty string means that message will not be sent to a specific queue
+console.log(` {x} Sent ${severity}: '${msg}'`)
+</code></pre>
+<h2 id="2-create-receive_logs_directjs"><a class="header" href="#2-create-receive_logs_directjs"><a id="27"></a>2. Create <code>receive_logs_direct.js</code></a></h2>
+<pre><code class="language-javascript">#!/usr/bin/env node
+const amqp = require('amqplib/callback_api')
+
+// Store message as args
+const args = process.argv.slice(2);
+
+// Choose what type of binding key `receive_logs_direct.js` is going to use
+// If no arguments were provided, output instructions
+if (args.length == 0) {
+  console.log(&quot;Usage: receive_logs_direct.js [info] [warning] [error]&quot;);
+  process.exit(1);
+}
+
+// Create connection
+amqp.connect('amqp://localhost', (err, conn) =&gt; {
+  // Create channel
+  conn.createChannel((err, ch) =&gt; {
+    // Name of the exchange
+    const ex = 'direct_logs'
+    // Declare the exchange
+    ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+
+    // Declare the queues
+    ch.assertQueue('', {exclusive: true}, (err, q) =&gt; {
+      // Wait for Queue Messages
+      console.log(` [*] Waiting for messages in ${q}. To exit press CTRL+C`)
+      // For each binding key, tell exchange to send messages to queue
+      args.forEach( severity =&gt; {
+        ch.bindQueue(q.queue, ex, severity)
+      })
+      
+      // Consume queue messages
+      ch.consume(q.queue, msg =&gt; {
+        console.log(` [x] ${msg.fields.routingKey}: ${msg.content.toString()}`)
+      }, {noAck: true})
+    })
+  })
+})
+</code></pre>
+<h3 id="major-differences-from-previous-pattern-receive_logsjs"><a class="header" href="#major-differences-from-previous-pattern-receive_logsjs">Major differences from previous pattern <code>receive_logs.js</code></a></h3>
+<ol>
+<li>We now require the user to specify a binding key as part of the run arguments. If no binding key is provided, an instruction will be outputted to the user.</li>
+</ol>
+<pre><code class="language-javascript">// If no arguments were provided, output instructions
+if (args.length == 0) {
+  console.log(&quot;Usage: receive_logs_direct.js [info] [warning] [error]&quot;);
+  process.exit(1);
+}
+</code></pre>
+<ol start="2">
+<li>The exchange is now declared as <code>direct</code>.</li>
+</ol>
+<pre><code class="language-javascript">// Declare the exchange
+ch.assertExchange(ex, 'direct', { durable: false }) // 'direct' will broadcast messages to its corresponding binding key (i.e. severity)
+</code></pre>
+<ol start="3">
+<li>The exchange is bound to queues by binding key</li>
+</ol>
+<pre><code class="language-javascript">// For each binding key, tell exchange to send messages to queue
+args.forEach( severity =&gt; {
+  ch.bindQueue(q.queue, ex, severity)
+})
+</code></pre>
+<ol start="4">
+<li>The output message now outputs the routing key (equivalent value to binding key)</li>
+</ol>
+<pre><code class="language-javascript">// Consume queue messages
+ch.consume(q.queue, msg =&gt; {
+  console.log(` [x] ${msg.fields.routingKey}: ${msg.content.toString()}`)
+}, {noAck: true})
+</code></pre>
+<h2 id="3-open-2-terminals-to-run-receive_logs_directjs-for-each-routing-key"><a class="header" href="#3-open-2-terminals-to-run-receive_logs_directjs-for-each-routing-key"><a id="28"></a>3. Open 2 terminals to run <code>receive_logs_direct.js</code> for each routing key:</a></h2>
+<pre><code># Terminal 1 - Will display info messages only
+chmod 755 receive_logs_direct.js
+./receive_logs_direct.js info
+</code></pre>
+<pre><code># Terminal 2 - Will display warning and error messages
+./receive_logs_direct.js warning error
+</code></pre>
+<h2 id="4-open-another-terminal-to-run-emit_log_directjs"><a class="header" href="#4-open-another-terminal-to-run-emit_log_directjs"><a id="29"></a>4. Open another terminal to run <code>emit_log_direct.js</code></a></h2>
+<pre><code># Terminal 3
+chmod 755 emit_log_direct.js
+./emit_log_direct.js info This is an info message
+./emit_log_direct.js warning This is a warning message
+./emit_log_direct.js error This is an error message
+</code></pre>
+<h2 id="5-in-summary"><a class="header" href="#5-in-summary"><a id="30"></a>5. In summary:</a></h2>
+<ol>
+<li>We are now publishing and subscribing to messages using a <code>direct</code> exchange.</li>
+<li>A <code>direct</code> exchange uses a <code>binding key</code> (which has an equivalent value to a <code>routing key</code>). This key will tell the subscribers to listen only to a specific queue (similar to a channel).</li>
+<li>Receiving logs require that a binding key is specified before runtime. The queue will only receive messages from publishers with a similar binding keys which is also specified before runtime.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ReponseTime.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="Exceptions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ReponseTime.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="Exceptions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace.js"></script>
+        <script src="editor.js"></script>
+        <script src="mode-rust.js"></script>
+        <script src="theme-dawn.js"></script>
+        <script src="theme-tomorrow_night.js"></script>
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
